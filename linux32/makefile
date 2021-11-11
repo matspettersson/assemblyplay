@@ -1,10 +1,10 @@
 all: hello
 
 hello: hello.o
-	ld hello.o -o hello
+	ld -m elf_i386 hello.o -o hello
 
 hello.o: hello.asm
-	nasm  -f elf64 -l hello.lst hello.asm 
+	nasm  -f elf32 -l hello.lst hello.asm
 
 clean:
 	rm hello hello.o hello.lst
