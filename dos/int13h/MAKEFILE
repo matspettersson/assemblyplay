@@ -1,0 +1,8 @@
+c1.exe : c1.obj c2.obj
+	link c1+c2;;;
+
+c2.obj : c2.asm makefile
+	masm c2;;;
+
+c1.obj : c1.c makefile
+	msc c1;;;  
