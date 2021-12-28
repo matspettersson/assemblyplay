@@ -1,4 +1,4 @@
-all: hello hellofromc
+all: hello hellofromc testhex
 
 hellofromc: hellofromc.o helloint.o
 	gcc hellofromc.o helloint.o -o hellofromc
@@ -14,6 +14,15 @@ hello: hello.o
 
 hello.o: hello.asm
 	nasm  -f elf64 -l hello.lst hello.asm
+
+testhex: testhex.o hexdisp.o
+	gcc testhex.o hexdisp.o -o testhex
+
+testhex.o: testhex.c makefile
+	gcc -c testhex.c
+
+hexdisp.o: hexdisp.asm makefile
+	nasm -f elf64 -l hexdisp.lst hexdisp.asm
 
 clean:
 	rm hello hello.o hello.lst hellofromc.o helloint.o helloint.lst
