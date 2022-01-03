@@ -1,4 +1,11 @@
-all: hello hellofromc testhex
+all: hello hellofromc testhex fatplay
+
+fatplay : fatplay.o
+	#ld fatplay.o -o fatplay
+	gcc fatplay.o -o fatplay
+
+fatplay.o: fatplay.asm makefile
+	nasm -felf64 fatplay.asm
 
 hellofromc: hellofromc.o helloint.o
 	gcc hellofromc.o helloint.o -o hellofromc
