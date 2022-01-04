@@ -1,4 +1,10 @@
-all: hello hellofromc testhex fatplay
+all: hello hellofromc testhex fatplay h1
+
+h1 : h1.o
+	ld h1.o -o h1
+
+h1.o : h1.asm makefile
+	nasm -f elf64 -g -F dwarf h1.asm
 
 fatplay : fatplay.o
 	#ld fatplay.o -o fatplay
