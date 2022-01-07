@@ -1,4 +1,4 @@
-all: hello hellofromc testhex fatplay h1 h2
+all: hello hellofromc testhex fatplay h1 conv
 
 h1 : h1.o
 	ld h1.o -o h1
@@ -6,11 +6,11 @@ h1 : h1.o
 h1.o : h1.asm makefile
 	nasm -f elf64 -g -F dwarf h1.asm
 
-h2 : h2.o
-		ld h2.o -o h2
+conv : conv.o
+		ld conv.o -o conv
 
-h2.o : h2.asm makefile
-		nasm -f elf64 -g -F dwarf h2.asm
+conv.o : conv.asm makefile
+		nasm -f elf64 -g -F dwarf conv.asm
 
 fatplay : fatplay.o
 	#ld fatplay.o -o fatplay
