@@ -1,52 +1,52 @@
 global _start
+extern strlen
+extern strlen2
+extern print_uint32
+extern printcrlf
+extern print
 
 section .data
 msg:      db "Hello, world! Linux 64-bit", 13, 10, 0
 msglen:   equ $ - msg
-crlf:     db 0dh, 0ah, 0
-crlflen:  equ $ - crlf
+parm_dh:  db "DH",0
+parm_hd:  db "HD",0
+parm_db:  db "DB",0
+parm_bd:  db "BD",0
 usage:    db "Usage:  conv DH (Decimal to Hex) number", 0dh, 0ah,
           db "        conv HD (Hex to Decimal) number", 0dh, 0ah,
           db "        conv DB (Decimal to Bin) number", 0dh, 0ah,
           db "        conv BD (Bin to Decimal) number", 0dh, 0ah, 0
 usagelen:    equ $-usage
-
-string: db "h4ppy c0d1ng",13,10,0
-len:    equ $-string
-
-;top of stack
-;               <- rsp after alignment
-;return address <- rsp at beginning (aligned rsp + 8)
-;  [something]  <- rsp + 16
-;    argc       <- rsp + 24
-;   argv        <- rsp + 32
-;   envp        <- rsp + 40  (in most Unix-compatible systems, the environment
-;    ...            ...       string array, char **envp)
-;bottom of stack
-; ...
-;somewhere else:
-;   argv[0]     <- argv+0:   address of first parameter (program path or name)
-;   argv[1]     <- argv+8:   address of second parameter (first command line argument)
-;   argv[2]     <- argv+16:  address of third parameter (second command line argument)
-;    ...
-;   argv[argc]  <-  argv+argc*8:  NULL
-
-
-;If you aren't using the C startup (you are using _start instead of main) then ARGC
-;is the value at memory location [rsp] . This is documented in the x86-64 System V ABI
-;can be found here: github.com/hjl-tools/x86-psABI/wiki/X86-psABI .
-;See section 3.4.1 Initial Stack and Register State . If your entry point is main then ARGC is passed in RDI
-; as described in the same calling convention. It is different for Windows. –
-;Michael Petch
-;Aug 24 '18 at 22:36
-
+ten:    db "10",0
 
 section .text
 
 _start:
 
   mov rdi, [rsp]
-  ;call  verify_no_of_parms
+  call  verify_no_of_parms
+
+  mov rdi, [rsp+24]
+  mov rsi, rdi
+  call print
+  call printcrlf
+  mov rsi, [rsp+24]
+  mov rsi, ten
+  call  string_to_int
+  ;call string_to_int
+  call print_uint32
+  call printcrlf
+  jmp aaa
+  mov rdi, [rsp+16]
+  call toUpper
+
+  mov   rdi, [rsp+16]
+  mov   rsi, parm_dh
+  call  cmpstr
+  mov   rdi, rax
+  ;call  print_uint32
+  ;cmp ax, 0
+  ;je  decimal_to_hex
 
 ;  mov edi, [rsp+16]
 ;  lea     edx, [edi - ('A')]     ; we substract the value of the letter A
@@ -59,21 +59,17 @@ _start:
 ;  mov rdi, [rsp+16]
 ;  call strlen2
 
-  mov rdi, msg
-  call s1
+  ;mov rdi, msg
+  ;call s1
 
 
-  mov rdi, 1        ;  STDOUT
+;  mov rdi, 1        ;  STDOUT
   mov rsi, [rsp+16]
-  mov rdx, rax
-  mov rax, 1        ;  write
-  syscall
-  mov rax, 1        ;  write
-  mov rdi, 1        ;  STDOUT
-  mov rsi, crlf
-  mov rdx, crlflen
-  syscall
-
+;  mov rdx, rax
+;  mov rax, 1        ;  write
+;  syscall
+  call print
+  call printcrlf
 
 
   mov rdi, [rsp + 16]
@@ -82,23 +78,14 @@ _start:
   call print_uint32
 
 
-  mov rax, 1        ;  write
-  mov rdi, 1        ;  STDOUT
-  mov rsi, crlf
-  mov rdx, crlflen
-  syscall
-
+call printcrlf
   mov rax, 1        ;  write
   mov rdi, 1        ;  STDOUT
   mov rsi, [rsp+24]
   mov rdx, 3
   syscall
 
-  mov rax, 1        ;  write
-  mov rdi, 1        ;  STDOUT
-  mov rsi, crlf
-  mov rdx, crlflen
-  syscall
+  call printcrlf
 
   mov rax, 1        ;  write
   mov rdi, 1        ;  STDOUT
@@ -106,12 +93,8 @@ _start:
   mov rdx, 3
   syscall
 
-  mov rax, 1        ;  write
-  mov rdi, 1        ;  STDOUT
-  mov rsi, crlf
-  mov rdx, crlflen
-  syscall
-
+  call printcrlf
+aaa:
   mov rax, 1        ;  write
   mov rdi, 1        ;  STDOUT
   mov rsi, msg
@@ -125,130 +108,155 @@ e1:
 
   ret
 
-print_uint32:
-      mov    eax, edi              ; function arg
-
-      mov    ecx, 0xa              ; base 10
-      push   rcx                   ; ASCII newline '\n' = 0xa = base
-      mov    rsi, rsp
-      sub    rsp, 16               ; not needed on 64-bit Linux, the red-zone is big enough.  Change the LEA below if you remove this.
-
-  ;;; rsi is pointing at '\n' on the stack, with 16B of "allocated" space below that.
-  .toascii_digit:                ; do {
-      xor    edx, edx
-      div    ecx                   ; edx=remainder = low digit = 0..9.  eax/=10
-                                   ;; DIV IS SLOW.  use a multiplicative inverse if performance is relevant.
-      add    edx, '0'
-      dec    rsi                 ; store digits in MSD-first printing order, working backwards from the end of the string
-      mov    [rsi], dl
-
-      test   eax,eax             ; } while(x);
-      jnz  .toascii_digit
-  ;;; rsi points to the first digit
-
-      mov    eax, 1               ; __NR_write from /usr/include/asm/unistd_64.h
-      mov    edi, 1               ; fd = STDOUT_FILENO
-      ; pointer already in RSI    ; buf = last digit stored = most significant
-      lea    edx, [rsp+16 + 1]    ; yes, it's safe to truncate pointers before subtracting to find length.
-      sub    edx, esi             ; RDX = length = end-start, including the \n
-      syscall                     ; write(1, string /*RSI*/,  digits + 1)
-
-      add  rsp, 24                ; (in 32-bit: add esp,20) undo the push and the buffer reservation
-      ret
-
-
 
 verify_no_of_parms:
-      mov rax, rdi
-      cmp rax, 3
-      je  ver_ok
+        mov rax, rdi
+        cmp rax, 3
+        je  ver_ok
 
-      mov rax, 1        ;  write
-      mov rdi, 1        ;  STDOUT
-      mov rsi, usage
-      mov rdx, usagelen
-      syscall
-      jmp e1          ; exit
-ver_ok:
-      ret
-
-
-
-strlen:         ;(rdi = *)
-      push  rcx             ; save and clear out counter
-      push  rdi             ;
-      xor   rcx, rcx        ;
-strlen_next:
-      cmp   [rdi], byte 0   ; null byte yet?
-      jz    strlen_null     ; yes, get out
-      inc   rcx             ; char is ok, count it
-      inc   rdi             ; move to next char
-      jmp   strlen_next     ; process again
-strlen_null:
-      mov   rax, rcx        ; rcx = the length (put in rax)
-      pop   rdi
-      pop   rcx             ; restore rcx
-      ret                   ;
-
-; https://tuttlem.github.io/2013/01/08/strlen-implementation-in-nasm.html
-strlen2:
-        push  rbx                 ; save any registers that
-        push  rcx                 ; we will trash in here
-        mov   rbx, rdi            ; rbx = rdi
-        xor   al, al              ; the byte that the scan will
-                                  ; compare to is zero
-        mov   rcx, 0xffffffff     ; the maximum number of bytes
-                                  ; i'm assuming any string will
-                                  ; have is 4gb
-        repne scasb               ; while [rdi] != al, keep scanning
-
-        sub   rdi, rbx            ; length = dist2 - dist1
-        mov   rax, rdi            ; rax now holds our length
-        pop   rcx                 ; restore the saved registers
-        pop   rbx
-        ret                       ; all done!
+        mov rax, 1        ;  write
+        mov rdi, 1        ;  STDOUT
+        mov rsi, usage
+        mov rdx, usagelen
+        syscall
+        jmp e1          ; exit
+  ver_ok:
+        ret
 
 
-s1:          ;lea rcx, string
-              push rdi
-              call toUpper
-              pop rdi
-              push rdi
-              call print
-              pop rdi
-              ret
-toUpper:
-                mov al, byte[rdi]      ; ecx is the pointer, so [ecx] the current char
-                cmp al,0x0
-                je done
-                cmp al,'a'
-                jb next_please
-                cmp al,'z'
-                ja next_please
-                sub al,0x20       ; move AL upper case and
-                mov [rdi], al      ; write it back to string
-next_please:
-                inc rdi
-                jmp toUpper
-done:           ;pop rcx
+
+toUpper:          ;lea rcx, string
+                      push rdi
+                      call s1
+                      pop rdi
+;                      push rdi
+;                      call print
+;                      pop rdi
+                      ret
+s1:
+                        mov al, byte[rdi]      ; ecx is the pointer, so [ecx] the current char
+                        cmp al,0x0
+                        je done
+                        cmp al,'a'
+                        jb next_please
+                        cmp al,'z'
+                        ja next_please
+                        sub al,0x20       ; move AL upper case and
+                        mov [rdi], al      ; write it back to string
+        next_please:
+                        inc rdi
+                        jmp s1
+        done:           ;pop rcx
+                        ret
+
+
+
+cmpstr:
+;                        	mov rsi, s1     ; esi = &s1
+;                        	mov rdi, s2     ; edi = &s2
+                        	xor rdx, rdx    ; edx = 0
+cmpstrloop:
+                        	mov al, [rsi + rdx]
+                        	mov bl, [rdi + rdx]
+                        	inc rdx
+                        	cmp al, bl      ; compare two current characters
+                        	jne cmpstrnot_equal   ; not equal
+                        	cmp al, 0       ; at end?
+                        	je cmpstrequal        ; end of both strings
+                        	jmp cmpstrloop        ; equal so far
+cmpstrnot_equal:
+                        	mov rdi, 1
+                        	jmp cmpstrexit
+cmpstrequal:
+                        	mov rdi, 0
+                        	jmp cmpstrexit
+cmpstrexit:
                 ret
 
-print:           mov rsi, rdi
-;lea rsi, string    ; what to print
-                call strlen2
-                mov rdx, rax       ; length of string to be printed
-                mov rdi, 1
-                mov rax, 1
-                syscall
 
-                mov rax, 1        ;  write
-                mov rdi, 1        ;  STDOUT
-                mov rsi, crlf
-                mov rdx, crlflen
-                syscall
 
-                ret
+        atoi:
+            push rbx            ; preserve rbx on the stack
+            push rcx            ; preserve rcx on the stack
+            push rdx            ; preserve rdx on the stack
+            push rsi            ; preserve rsi on the stack
+          ;  mov rsi, rax        ; move rax in rsi. The string to convert is in rsi
+            mov rax, 0          ; move the value of 0 into rax
+            mov rcx, 0          ; move the value of 0 into rcx
+        _conversion:
+            xor rbx, rbx        ; clear the register rbx
+            mov bl, [rsi+rcx]   ; bl is a single byte ( 8bits) we move a single byte into rbx
+            cmp bl, 48          ; it's comparing bl with 48. 48 = 0 according to the ascii table
+            jl _end             ; if it lower to 0, go to the label finished
+            cmp bl, 57          ; it's comparing bi with 57. 57 = 9 according to the ascii table
+            jg _end             ; if it's greater to 9, go to the label finished
+            sub bl, 48          ; convert a signle byte of the string into an integer value.The equivalent is sub bl, '0'
+            add rax, rbx        ; add rbx to rax
+            mov rbx, 10         ; move 10 into rbx
+            mul rbx             ; mul rbx by 10
+            inc rcx             ; increment the counter by 1
+            jmp _conversion     ; loop
+        _end:
+            cmp rcx, 0          ; compare rcx with the counter (rcx)
+            je _pop             ; if it's equal, go to the pop label
+            mov rbx, 10         ; move 10 into rbx
+            div rbx             ; divide rax by 10 (because 10 is in rbx)
+        _pop:
+            pop rsi             ; remove rsi of the stack
+            pop rdx             ; remove rdx of the stack
+            pop rcx             ; remove rcx of the stack
+            pop rbx             ; remove rbx of the stack
+            ret                 ; return
+; Input:
+; EDI = pointer to the string to convert
+; ECX = number of digits in the string (must be > 0)
+; Output:
+; EAX = integer value
+string_to_int:
+    push rdi
+    ;call strlen2
+    mov  rcx, 2
 
+    xor rax, rax
+    xor rbx,rbx    ; clear ebx
+
+.next_digit:
+    ;movzx eax,byte[rdi]
+    mov al, [rdi]
+    sub al,'0'    ; convert from ASCII to number
+
+    imul rbx,10
+    add rbx,rax   ; ebx = ebx*10 + eax
+    inc rdi
+    loop .next_digit  ; while (--ecx)
+
+;    mov rax,rbx
+
+    pop rdi
+    ret
+
+
+
+        ; Input:
+        ; EAX = integer value to convert
+        ; ESI = pointer to buffer to store the string in (must have room for at least 10 bytes)
+        ; Output:
+        ; EAX = pointer to the first character of the generated string
+int_to_string:
+          add esi,9
+          mov byte [esi], 0
+
+          mov ebx,10
+.next_digit:
+          xor edx,edx         ; Clear edx prior to dividing edx:eax by ebx
+          div ebx             ; eax /= 10
+          add dl,'0'          ; Convert the remainder to ASCII
+          dec esi             ; store characters in reverse order
+          mov [esi],dl
+          test eax,eax
+          jnz .next_digit     ; Repeat until eax==0
+          mov eax,esi
+          ret
 
 ;      puts: # (rdi = filedescr, rsi = buf)
 ;          save_registers

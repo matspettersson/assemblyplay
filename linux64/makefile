@@ -1,4 +1,4 @@
-all: hello hellofromc testhex fatplay h1 conv
+all: hello hellofromc testhex fatplay h1 conv matslib.o
 
 h1 : h1.o
 	ld h1.o -o h1
@@ -6,8 +6,11 @@ h1 : h1.o
 h1.o : h1.asm makefile
 	nasm -f elf64 -g -F dwarf h1.asm
 
-conv : conv.o
-		ld conv.o -o conv
+matslib.o : matslib.asm makefile
+		nasm -f elf64 -g -F dwarf matslib.asm
+
+conv : conv.o matslib.o
+		ld conv.o matslib.o -o conv
 
 conv.o : conv.asm makefile
 		nasm -f elf64 -g -F dwarf conv.asm
