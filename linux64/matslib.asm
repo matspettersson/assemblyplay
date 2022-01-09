@@ -91,12 +91,17 @@ printcrlf:
 
 
 print:           mov rsi, rdi
+        push  rax
+        push  rdx
 ;lea rsi, string    ; what to print
                 call strlen2
                 mov rdx, rax       ; length of string to be printed
                 mov rdi, 1
                 mov rax, 1
                 syscall
+
+        pop     rdx
+        pop     rax
 
                 ret
 

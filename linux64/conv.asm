@@ -17,7 +17,16 @@ usage:    db "Usage:  conv DH (Decimal to Hex) number", 0dh, 0ah,
           db "        conv DB (Decimal to Bin) number", 0dh, 0ah,
           db "        conv BD (Bin to Decimal) number", 0dh, 0ah, 0
 usagelen:    equ $-usage
-ten:    db "10",0
+convdh:   db "Converting from decimal to hex: ", 0dh, 0ah,0
+convdhlen: equ $-convdh
+convhd:   db "Converting from hex to decimal: ", 0dh, 0ah,0
+convhdlen: equ $-convhd
+convdb:   db "Converting from decimal to bin: ", 0dh, 0ah,0
+convdblen: equ $-convdb
+convbd:   db "Converting from bin to decimal: ", 0dh, 0ah,0
+convbdlen: equ $-convbd
+wrongparms: db "Wrong parmameters given.",  0dh, 0ah,0
+wrongparmslen: equ $-wrongparms
 
 section .text
 
@@ -26,80 +35,46 @@ _start:
   mov rdi, [rsp]
   call  verify_no_of_parms
 
-  mov rdi, [rsp+24]
-  mov rsi, rdi
-  call print
-  call printcrlf
-  mov rsi, [rsp+24]
-  mov rsi, ten
+  mov rdi, [rsp+24]     ;
   call  string_to_int
-  ;call string_to_int
+
+  mov rdi, rax
   call print_uint32
   call printcrlf
-  jmp aaa
+
   mov rdi, [rsp+16]
   call toUpper
 
   mov   rdi, [rsp+16]
   mov   rsi, parm_dh
   call  cmpstr
-  mov   rdi, rax
-  ;call  print_uint32
-  ;cmp ax, 0
-  ;je  decimal_to_hex
+  cmp ax, 0
+  je  decimal_to_hex
 
-;  mov edi, [rsp+16]
-;  lea     edx, [edi - ('A')]     ; we substract the value of the letter A
-;  mov     eax, edi     ; return value set to input value
-;  or      edi, 0x20    ; create a lowercase version
-;  cmp     edx, 'Z'-'A' ; that we will use only if we were facing an upper case character
-;  cmovb   eax, edi     ; if it was, we move value from edi to eax
+  mov   rdi, [rsp+16]
+  mov   rsi, parm_hd
+  call  cmpstr
+  cmp ax, 0
+  je  hex_to_decimal
 
+  mov   rdi, [rsp+16]
+  mov   rsi, parm_db
+  call  cmpstr
+  cmp ax, 0
+  je  decimal_to_bin
 
-;  mov rdi, [rsp+16]
-;  call strlen2
-
-  ;mov rdi, msg
-  ;call s1
-
-
-;  mov rdi, 1        ;  STDOUT
-  mov rsi, [rsp+16]
-;  mov rdx, rax
-;  mov rax, 1        ;  write
-;  syscall
-  call print
-  call printcrlf
-
-
-  mov rdi, [rsp + 16]
-  call  strlen
-  mov   rdi, rax
-  call print_uint32
-
-
-call printcrlf
-  mov rax, 1        ;  write
-  mov rdi, 1        ;  STDOUT
-  mov rsi, [rsp+24]
-  mov rdx, 3
-  syscall
-
-  call printcrlf
+  mov   rdi, [rsp+16]
+  mov   rsi, parm_bd
+  call  cmpstr
+  cmp ax, 0
+  je  bin_to_decimal
 
   mov rax, 1        ;  write
   mov rdi, 1        ;  STDOUT
-  mov rsi, [rsp+32]
-  mov rdx, 3
+  mov rsi, wrongparms
+  mov rdx, wrongparmslen
   syscall
 
-  call printcrlf
-aaa:
-  mov rax, 1        ;  write
-  mov rdi, 1        ;  STDOUT
-  mov rsi, msg
-  mov rdx, msglen
-  syscall
 
 e1:
   mov rax, 60       ; exit
@@ -107,6 +82,40 @@ e1:
   syscall
 
   ret
+
+decimal_to_hex:
+      mov rax, 1        ;  write
+      mov rdi, 1        ;  STDOUT
+      mov rsi, convdh
+      mov rdx, convdhlen
+      syscall
+      jmp e1
+
+
+hex_to_decimal:
+      mov rax, 1        ;  write
+      mov rdi, 1        ;  STDOUT
+      mov rsi, convhd
+      mov rdx, convhdlen
+      syscall
+      jmp e1
+
+
+decimal_to_bin:
+      mov rax, 1        ;  write
+      mov rdi, 1        ;  STDOUT
+      mov rsi, convdb
+      mov rdx, convdblen
+      syscall
+      jmp e1
+
+bin_to_decimal:
+      mov rax, 1        ;  write
+      mov rdi, 1        ;  STDOUT
+      mov rsi, convbd
+      mov rdx, convbdlen
+      syscall
+      jmp e1
 
 
 verify_no_of_parms:
@@ -175,54 +184,54 @@ cmpstrexit:
 
 
 
-        atoi:
-            push rbx            ; preserve rbx on the stack
-            push rcx            ; preserve rcx on the stack
-            push rdx            ; preserve rdx on the stack
-            push rsi            ; preserve rsi on the stack
-          ;  mov rsi, rax        ; move rax in rsi. The string to convert is in rsi
-            mov rax, 0          ; move the value of 0 into rax
-            mov rcx, 0          ; move the value of 0 into rcx
-        _conversion:
-            xor rbx, rbx        ; clear the register rbx
-            mov bl, [rsi+rcx]   ; bl is a single byte ( 8bits) we move a single byte into rbx
-            cmp bl, 48          ; it's comparing bl with 48. 48 = 0 according to the ascii table
-            jl _end             ; if it lower to 0, go to the label finished
-            cmp bl, 57          ; it's comparing bi with 57. 57 = 9 according to the ascii table
-            jg _end             ; if it's greater to 9, go to the label finished
-            sub bl, 48          ; convert a signle byte of the string into an integer value.The equivalent is sub bl, '0'
-            add rax, rbx        ; add rbx to rax
-            mov rbx, 10         ; move 10 into rbx
-            mul rbx             ; mul rbx by 10
-            inc rcx             ; increment the counter by 1
-            jmp _conversion     ; loop
-        _end:
-            cmp rcx, 0          ; compare rcx with the counter (rcx)
-            je _pop             ; if it's equal, go to the pop label
-            mov rbx, 10         ; move 10 into rbx
-            div rbx             ; divide rax by 10 (because 10 is in rbx)
-        _pop:
-            pop rsi             ; remove rsi of the stack
-            pop rdx             ; remove rdx of the stack
-            pop rcx             ; remove rcx of the stack
-            pop rbx             ; remove rbx of the stack
-            ret                 ; return
+;        atoi:
+;            push rbx            ; preserve rbx on the stack
+;            push rcx            ; preserve rcx on the stack
+;            push rdx            ; preserve rdx on the stack
+;            push rsi            ; preserve rsi on the stack
+;          ;  mov rsi, rax        ; move rax in rsi. The string to convert is in rsi
+;            mov rax, 0          ; move the value of 0 into rax
+;            mov rcx, 0          ; move the value of 0 into rcx
+;        _conversion:
+;            xor rbx, rbx        ; clear the register rbx
+;            mov bl, [rsi+rcx]   ; bl is a single byte ( 8bits) we move a single byte into rbx
+;            cmp bl, 48          ; it's comparing bl with 48. 48 = 0 according to the ascii table
+;            jl _end             ; if it lower to 0, go to the label finished
+;            cmp bl, 57          ; it's comparing bi with 57. 57 = 9 according to the ascii table
+;            jg _end             ; if it's greater to 9, go to the label finished
+;            sub bl, 48          ; convert a signle byte of the string into an integer value.The equivalent is sub bl, '0'
+;            add rax, rbx        ; add rbx to rax
+;            mov rbx, 10         ; move 10 into rbx
+;            mul rbx             ; mul rbx by 10
+;            inc rcx             ; increment the counter by 1
+;            jmp _conversion     ; loop
+;        _end:
+;            cmp rcx, 0          ; compare rcx with the counter (rcx)
+;            je _pop             ; if it's equal, go to the pop label
+;            mov rbx, 10         ; move 10 into rbx
+;            div rbx             ; divide rax by 10 (because 10 is in rbx)
+;        _pop:
+;            pop rsi             ; remove rsi of the stack
+;            pop rdx             ; remove rdx of the stack
+;            pop rcx             ; remove rcx of the stack
+;            pop rbx             ; remove rbx of the stack
+;            ret                 ; return
+
 ; Input:
-; EDI = pointer to the string to convert
-; ECX = number of digits in the string (must be > 0)
+; RDI = pointer to the string to convert
 ; Output:
 ; EAX = integer value
 string_to_int:
     push rdi
-    ;call strlen2
-    mov  rcx, 2
+    call strlen
+    mov  rcx, rax
 
     xor rax, rax
     xor rbx,rbx    ; clear ebx
 
 .next_digit:
     ;movzx eax,byte[rdi]
-    mov al, [rdi]
+    mov al, byte[rdi]
     sub al,'0'    ; convert from ASCII to number
 
     imul rbx,10
@@ -230,7 +239,7 @@ string_to_int:
     inc rdi
     loop .next_digit  ; while (--ecx)
 
-;    mov rax,rbx
+    mov rax,rbx
 
     pop rdi
     ret
