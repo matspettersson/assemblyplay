@@ -1,5 +1,14 @@
+<<<<<<< HEAD
 *.obj
 *.exe
 *.com
 *.o
 
+=======
+**.obj
+**.exe
+**.com
+**.o
+**.
+**.lst
+>>>>>>> 2536024ecec0567f9a53c04b6ab34d16ffbcc76c

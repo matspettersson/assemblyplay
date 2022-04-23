@@ -1,0 +1,22 @@
+     1                                  global _start
+     2                                  
+     3                                  section .rodata
+     4 00000000 48656C6C6F2C20776F-     msg:      db "Hello, world! Linux 64-bit", 13, 10
+     4 00000009 726C6421204C696E75-
+     4 00000012 782036342D6269740D-
+     4 0000001B 0A                 
+     5                                  msglen:   equ $ - msg
+     6                                  
+     7                                  section .text
+     8                                  
+     9                                  _start:
+    10 00000000 B801000000                mov rax, 1        ;  write
+    11 00000005 BF01000000                mov rdi, 1        ;  STDOUT
+    12 0000000A 48BE-                     mov rsi, msg
+    12 0000000C [0000000000000000] 
+    13 00000014 BA1C000000                mov rdx, msglen
+    14 00000019 0F05                      syscall
+    15                                  
+    16 0000001B B83C000000                mov rax, 60       ; exit
+    17 00000020 BF00000000                mov rdi, 0        ; rc 0
+    18 00000025 0F05                      syscall
