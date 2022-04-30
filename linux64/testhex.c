@@ -14,8 +14,8 @@ int rc = 0;
 
 
 	ch = 'a';
-	//ret = hexdisp(ch);
-	ret = hexdisp("abcdefghijk");
+	//ret = hexdisp(&ch);
+	ret = hexdisp("Hello world! Oi mundo!\n");
 
 
   rc = slen(argv[1]);

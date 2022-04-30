@@ -57,15 +57,17 @@ hexdisp:
   push	rdi
   push	rsi
 
-;  mov eax, [ebp+8]     ; eax = start of string c
-;  mov ecx, [ebp+12]        ; ecx = start of string d
+  push  rax
+  call  slen
+  mov   rdx, rax
+  pop   rax
 
+
+  mov rsi, rax
   mov rax, 1        ;  write
   mov rdi, 1        ;  STDOUT
-  mov rsi, msg
-;  mov rsi, [ebp+8]
 
-  mov rdx, msglen
+;  mov rdx, msglen
 ;  mov rdx, 5
   syscall
 
