@@ -1,4 +1,4 @@
-all: hello hellofromc testhex fatplay h1 conv matslib.o
+all: hello hellofromc testhex fatplay h1 conv matslib.o args
 
 h1 : h1.o
 	ld h1.o -o h1
@@ -45,6 +45,12 @@ testhex.o: testhex.c makefile
 
 hexdisp.o: hexdisp.asm makefile
 	nasm -f elf64 -l hexdisp.lst hexdisp.asm
+
+args: args.o makefile matslib.o
+	ld args.o matslib.o -o args
+
+args.o: args.asm makefile
+	nasm -f elf64 -l args.lst args.asm
 
 clean:
 	rm hello hello.o hello.lst hellofromc.o helloint.o helloint.lst
