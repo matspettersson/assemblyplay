@@ -1,4 +1,4 @@
-all: hello hellofromc testhex fatplay h1 conv matslib.o args
+all: hello hellofromc testhex fatplay h1 conv matslib.o args logictests
 
 h1 : h1.o
 	ld h1.o -o h1
@@ -52,5 +52,11 @@ args: args.o makefile matslib.o
 args.o: args.asm makefile
 	nasm -f elf64 -l args.lst args.asm
 
+logictests: logictests.o makefile
+	ld logictests.o -o logictests
+
+logictests.o: logictests.asm
+	nasm -f elf64 -l logictests.lst logictests.asm
+
 clean:
-	rm hello hello.o hello.lst hellofromc.o helloint.o helloint.lst
+	rm hello hello.o hello.lst hellofromc.o helloint.o helloint.lst logictests.lst
