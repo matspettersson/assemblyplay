@@ -1,0 +1,52 @@
+
+
+                                                                       PAGE   1
+                                                                       12-19-<2
+                                                                       20:13:28
+
+  Line#  Source Line              IBM Personal Computer C Compiler Version 1.00
+
+      1  #include <stdio.h>
+      2  
+      3  extern int max(int , int ); 
+      4  extern void swap(int *, int *);
+      5  
+      6  void main() {
+      7          int a, b;
+      8  
+      9          printf("\nInsert two integers\n");
+     10          printf("A=");
+     11          scanf("%d", &a);
+     12          printf("B=");
+     13          scanf("%d", &b);
+     14  
+     15          printf("maximum=%d\n", max(a,b));
+     16  
+     17          swap(&a, &b);
+     18          printf("a=%d, b=%d\n", a, b);
+     19  }
+
+main  Local Symbols
+
+Name                            Class    Offset    Register
+
+a . . . . . . . . . . . . . . . auto      -0002    
+b . . . . . . . . . . . . . . . auto      -0004    
+
+
+
+Global Symbols
+
+Name                            Type             Size    Class    Offset
+
+main. . . . . . . . . . . . . . near function     ***    global     0000
+max . . . . . . . . . . . . . . near function     ***    extern      ***
+printf. . . . . . . . . . . . . near function     ***    extern      ***
+scanf . . . . . . . . . . . . . near function     ***    extern      ***
+swap. . . . . . . . . . . . . . near function     ***    extern      ***
+
+Code size = 0079 (121)
+Data size = 003a (58)
+Bss size  = 0000 (0)
+
+No errors detected

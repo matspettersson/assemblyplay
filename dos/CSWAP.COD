@@ -1,0 +1,124 @@
+;	Static Name Aliases
+;
+	TITLE   cswap
+
+	.287
+_TEXT	SEGMENT  BYTE PUBLIC 'CODE'
+_TEXT	ENDS
+_DATA	SEGMENT  WORD PUBLIC 'DATA'
+_DATA	ENDS
+CONST	SEGMENT  WORD PUBLIC 'CONST'
+CONST	ENDS
+_BSS	SEGMENT  WORD PUBLIC 'BSS'
+_BSS	ENDS
+DGROUP	GROUP	CONST,	_BSS,	_DATA
+	ASSUME  CS: _TEXT, DS: DGROUP, SS: DGROUP, ES: DGROUP
+EXTRN	_max:NEAR
+EXTRN	_swap:NEAR
+EXTRN	_printf:NEAR
+EXTRN	_scanf:NEAR
+EXTRN	__chkstk:NEAR
+_DATA	SEGMENT
+_DATA	ENDS
+_DATA      SEGMENT
+$SG27	DB	0aH, 'Insert two integers',  0aH,  00H
+$SG28	DB	'A=',  00H
+	EVEN
+$SG30	DB	'%d',  00H
+	EVEN
+$SG31	DB	'B=',  00H
+	EVEN
+$SG32	DB	'%d',  00H
+	EVEN
+$SG33	DB	'maximum=%d',  0aH,  00H
+$SG34	DB	'a=%d, b=%d',  0aH,  00H
+_DATA      ENDS
+_TEXT      SEGMENT
+;|*** #include <stdio.h>
+;|*** 
+;|*** extern int max(int , int ); 
+;|*** extern void swap(int *, int *);
+;|*** 
+;|*** void main() {
+; Line 6
+	PUBLIC	_main
+_main	PROC NEAR
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+	*** 000003	b8 04 00 		mov	ax,4
+	*** 000006	e8 00 00 		call	__chkstk
+;	a = -2
+;	b = -4
+;|***         int a, b;
+;|*** 
+;|***         printf("\nInsert two integers\n");
+; Line 9
+	*** 000009	b8 00 00 		mov	ax,OFFSET DGROUP:$SG27
+	*** 00000c	50 			push	ax
+	*** 00000d	e8 00 00 		call	_printf
+	*** 000010	83 c4 02 		add	sp,2
+;|***         printf("A=");
+; Line 10
+	*** 000013	b8 16 00 		mov	ax,OFFSET DGROUP:$SG28
+	*** 000016	50 			push	ax
+	*** 000017	e8 00 00 		call	_printf
+	*** 00001a	83 c4 02 		add	sp,2
+;|***         scanf("%d", &a);
+; Line 11
+	*** 00001d	8d 46 fe 		lea	ax,[bp-2]	;a
+	*** 000020	50 			push	ax
+	*** 000021	b8 19 00 		mov	ax,OFFSET DGROUP:$SG30
+	*** 000024	50 			push	ax
+	*** 000025	e8 00 00 		call	_scanf
+	*** 000028	83 c4 04 		add	sp,4
+;|***         printf("B=");
+; Line 12
+	*** 00002b	b8 1c 00 		mov	ax,OFFSET DGROUP:$SG31
+	*** 00002e	50 			push	ax
+	*** 00002f	e8 00 00 		call	_printf
+	*** 000032	83 c4 02 		add	sp,2
+;|***         scanf("%d", &b);
+; Line 13
+	*** 000035	8d 46 fc 		lea	ax,[bp-4]	;b
+	*** 000038	50 			push	ax
+	*** 000039	b8 1f 00 		mov	ax,OFFSET DGROUP:$SG32
+	*** 00003c	50 			push	ax
+	*** 00003d	e8 00 00 		call	_scanf
+	*** 000040	83 c4 04 		add	sp,4
+;|*** 
+;|***         printf("maximum=%d\n", max(a,b));
+; Line 15
+	*** 000043	ff 76 fc 		push	WORD PTR [bp-4]	;b
+	*** 000046	ff 76 fe 		push	WORD PTR [bp-2]	;a
+	*** 000049	e8 00 00 		call	_max
+	*** 00004c	83 c4 04 		add	sp,4
+	*** 00004f	50 			push	ax
+	*** 000050	b8 22 00 		mov	ax,OFFSET DGROUP:$SG33
+	*** 000053	50 			push	ax
+	*** 000054	e8 00 00 		call	_printf
+	*** 000057	83 c4 04 		add	sp,4
+;|*** 
+;|***         swap(&a, &b);
+; Line 17
+	*** 00005a	8d 46 fc 		lea	ax,[bp-4]	;b
+	*** 00005d	50 			push	ax
+	*** 00005e	8d 46 fe 		lea	ax,[bp-2]	;a
+	*** 000061	50 			push	ax
+	*** 000062	e8 00 00 		call	_swap
+	*** 000065	83 c4 04 		add	sp,4
+;|***         printf("a=%d, b=%d\n", a, b);
+; Line 18
+	*** 000068	ff 76 fc 		push	WORD PTR [bp-4]	;b
+	*** 00006b	ff 76 fe 		push	WORD PTR [bp-2]	;a
+	*** 00006e	b8 2e 00 		mov	ax,OFFSET DGROUP:$SG34
+	*** 000071	50 			push	ax
+	*** 000072	e8 00 00 		call	_printf
+;|*** }
+; Line 19
+	*** 000075	8b e5 			mov	sp,bp
+	*** 000077	5d 			pop	bp
+	*** 000078	c3 			ret	
+
+_main	ENDP
+_TEXT	ENDS
+END

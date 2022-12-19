@@ -1,0 +1,34 @@
+
+
+ Start  Stop   Length Name                   Class
+ 00000H 01B75H 01B76H _TEXT                  CODE
+ 01B76H 01B76H 00000H C_ETEXT                ENDCODE
+ 01B80H 01BA2H 00023H _TEXT                  
+ 01BB0H 01C0AH 0005BH NULL                   BEGDATA
+ 01C0CH 01F03H 002F8H _DATA                  DATA
+ 01F04H 01F11H 0000EH CDATA                  DATA
+ 01F12H 01F12H 00000H XIB                    DATA
+ 01F12H 01F17H 00006H XI                     DATA
+ 01F18H 01F18H 00000H XIE                    DATA
+ 01F18H 01F18H 00000H XPB                    DATA
+ 01F18H 01F19H 00002H XP                     DATA
+ 01F1AH 01F1AH 00000H XPE                    DATA
+ 01F1AH 01F1AH 00000H XCB                    DATA
+ 01F1AH 01F1BH 00002H XC                     DATA
+ 01F1CH 01F1CH 00000H XCE                    DATA
+ 01F1CH 01F1CH 00000H CONST                  CONST
+ 01F1CH 01F55H 0003AH _BSS                   BSS
+ 01F60H 0235FH 00400H c_common               BSS
+ 02360H 02B5FH 00800H STACK                  STACK
+
+ Origin   Group
+ 01BB:0   DGROUP
+ 0000:0   IGROUP
+CSWAP.OBJ(cswap.c) : error L2002: fixup overflow
+  near 0063 in segment _TEXT offset 1C0H
+  frm seg _TEXT, tgt seg _TEXT, tgt offset 0010
+CSWAP.OBJ(cswap.c) : error L2002: fixup overflow
+  near 004A in segment _TEXT offset 1CBH
+  frm seg _TEXT, tgt seg _TEXT, tgt offset 0000
+
+Program entry point at 0000:009D
