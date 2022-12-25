@@ -23,7 +23,7 @@ fatplay.o: fatplay.asm makefile
 	nasm -felf64 fatplay.asm
 
 hellofromc: hellofromc.o helloint.o
-	gcc hellofromc.o helloint.o -o hellofromc
+	gcc hellofromc.o helloint.o -o hellofromc -z noexecstack
 
 hellofromc.o : hellofromc.c
 	gcc -c hellofromc.c
