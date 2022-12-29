@@ -1,0 +1,139 @@
+
+
+                                                                       PAGE   1
+                                                                       12-26-<2
+                                                                       20:10:17
+
+  Line#  Source Line              IBM Personal Computer C Compiler Version 1.00
+
+      1  #include <stdio.h>
+      2  /* #include <stdbool.h> */
+      3  
+      4  extern int helloint(int );
+      5  extern int helloints(int , int , int , int , int , int , int , int , int );
+      6  
+      7  /* int hellocints(int a1, int a2, int a3, int a4, int a5, int a6, int a7, int a8, int a9) { */
+      8  int hellocints(a1, a2, a3, a4, a5, a6, a7, a8, a9) {  
+      9  /* int hellocints(int , int , int , int , int , int , int , int , int ) { */
+     10  	int ret;
+     11  	/*
+     12  	, a1, a2, a3, a4, a5, a6, a7, a8, a9;
+     13  	*/
+     14  	ret = 0;
+     15  	ret = a1;
+     16  	ret += a2;
+     17  	ret += a3;
+     18  	ret += a4;
+     19  	ret += a5;
+     20  	ret += a6;
+     21  	ret += a7;
+     22  	ret += a8;
+     23  	ret += a9;
+     24  
+     25  	return ret;
+
+hellocints  Local Symbols
+
+Name                            Class    Offset    Register
+
+a1. . . . . . . . . . . . . . . param      0004    
+a2. . . . . . . . . . . . . . . param      0006    
+a3. . . . . . . . . . . . . . . param      0008    
+a4. . . . . . . . . . . . . . . param      000a    
+a5. . . . . . . . . . . . . . . param      000c    
+a6. . . . . . . . . . . . . . . param      000e    
+a7. . . . . . . . . . . . . . . param      0010    
+a8. . . . . . . . . . . . . . . param      0012    
+a9. . . . . . . . . . . . . . . param      0014    
+ret . . . . . . . . . . . . . . auto      -0002    
+
+     26  }
+     27  
+     28  int main() {
+     29  /*	int argc;
+     30  	char *argv[]; */
+     31  char *hello = "Hello, world! DOS 16-bit";
+     32  int a = 0;
+     33  int rc = 0;
+     34  
+     35  	printf("%s\n",hello);
+     36  
+     37  	a = 0;
+     38  	rc = helloint(a);
+
+
+                                                                       PAGE   2
+                                                                       12-26-<2
+                                                                       20:10:17
+
+  Line#  Source Line              IBM Personal Computer C Compiler Version 1.00
+
+     39  	printf("Return value: %d, Integer a = %d is %s\n", rc, a, rc ? "odd" : "even");
+     40  	a = 1;
+     41  	rc = helloint(a);
+     42  	printf("Return value: %d, Integer a = %d is %s\n", rc, a, rc ? "odd" : "even");
+     43  	a = 2;
+     44  	rc = helloint(a);
+     45  	printf("Return value: %d, Integer a = %d is %s\n", rc, a, rc ? "odd" : "even");
+     46  	a = 3;
+     47  	rc = helloint(a);
+     48  	printf("Return value: %d, Integer a = %d is %s\n", rc, a, rc ? "odd" : "even");
+     49  	a = 8;
+     50  	rc = helloint(a);
+     51  	printf("Return value: %d, Integer a = %d is %s\n", rc, a, rc ? "odd" : "even");
+     52  	rc = helloints(1, 2, 3, 4, 5, 6, 7, 8, 9);
+     53  	printf("rc=%d (%d %d %d %d %d %d %d %d %d)\n", rc, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+     54  /*
+     55  	rc = hellocints(1, 2, 3, 4, 5, 6, 7, 8, 9);
+     56  	printf("crc=%d (%d %d %d %d %d %d %d %d %d)\n", rc, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+     57  */
+     58  
+     59  	rc = helloints(1, 1, 1, 1, 1, 5, 0, 0, 0);
+     60  	printf("rc=%d (%d %d %d %d %d %d %d %d %d)\n", rc, 1, 1, 1, 1, 1, 5, 0, 0, 0);
+     61  
+     62  	rc = helloints(9, 9, 9, 9, 10, 10, 10, 10, 10);
+     63  	printf("rc=%d (%d %d %d %d %d %d %d %d %d)\n", rc, 9, 9, 9, 9, 10, 10, 10, 10, 10);
+     64  /*
+     65  	rc = hellocints(1, 1, 1, 1, 1, 5, 0, 0, 0);
+     66  	printf("crc=%d\n", rc);
+     67  */
+     68  }
+
+main  Local Symbols
+
+Name                            Class    Offset    Register
+
+a . . . . . . . . . . . . . . . auto      -0006    
+hello . . . . . . . . . . . . . auto      -0004    
+rc. . . . . . . . . . . . . . . auto      -0002    
+
+
+
+Global Symbols
+
+Name                            Type             Size    Class    Offset
+
+hellocints. . . . . . . . . . . near function     ***    global     0000
+helloint. . . . . . . . . . . . near function     ***    extern      ***
+helloints . . . . . . . . . . . near function     ***    extern      ***
+main. . . . . . . . . . . . . . near function     ***    global     004b
+printf. . . . . . . . . . . . . near function     ***    extern      ***
+
+Code size = 0226 (550)
+Data size = 017e (382)
+Bss size  = 0000 (0)
+
+
+                                                                       PAGE   3
+                                                                       12-26-<2
+                                                                       20:10:17
+
+                                  IBM Personal Computer C Compiler Version 1.00
+
+
+Global Symbols
+
+Name                            Type             Size    Class    Offset
+
+
+No errors detected
