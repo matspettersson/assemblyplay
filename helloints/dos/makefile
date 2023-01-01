@@ -1,34 +1,21 @@
-all: hc_s.exe  hc_m.exe hc_l.exe 
-# hc_h.exe
+all: helloc_s.exe  helloc_l.exe 
 
-hc_s.exe : hc_s.obj
-	link hc_s + hint.obj;;;
+helloc_s.exe : helloc_s.obj helloint.obj
+	link helloc_s + helloint.obj;;;
 
-hc_h.exe : hc_h.obj
-	link hc_h + hint.obj;;;
+helloc_l.exe : helloc_l.obj helloint.obj
+	link helloc_l + helloint.obj;;;
 
-#hc_m.exe : hc_m.obj
-#	link hc_m + hint.obj;;;
+helloc_s.obj : helloc.c
+	cc /AS  helloc.c;;;
+	ren helloc.obj helloc_s.obj
 
-hc_l.exe : hc_l.obj
-	link hc_l + hint.obj;;;
+helloc_l.obj : helloc.c
+	cc /AL helloc.c ;;;
+	ren helloc.obj helloc_l.obj
 
-hc_s.obj : hc.c
-	cc /AS  hc.c;;;
-	ren hc.obj hc_s.obj
-
-hc_m.obj : hc.c
-	cc /AM hc.c ;;;
-	ren hc.obj hc_m.obj
-
-hc_l.obj : hc.c
-	cc /AL hc.c ;;;
-	ren hc.obj hc_l.obj
-
-#hc_h.obj : hc.c
-#	cc /AH  hc.c ;;;
-#	ren hc.obj hc_h.obj
-
+helloint.obj: helloint.asm
+	masm /c /Flhelloint.lst helloint.asm
 
 clean:
-	del hc_s.exe hc_h.exe hc_m.exe hc_l.exe hc_s.obj hc_h.obj hc_m.obj hc_l.obj
+	del helloc_s.exe helloc_l.exe helloc_s.obj helloc_l.obj helloint.obj helloint.lst
