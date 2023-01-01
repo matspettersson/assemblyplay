@@ -1,6 +1,3 @@
-;global helloint:function
-;global helloints:function
-
 PUBLIC helloint
 PUBLIC helloints
 
@@ -8,9 +5,6 @@ _DATA SEGMENT
 _DATA ENDS
 
 _TEXT SEGMENT
-;section .data
-
-;section .text
 
 helloint PROC
 ; Integer arguments are passed in registers RCX, RDX, R8, and R9.
