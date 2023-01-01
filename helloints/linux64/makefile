@@ -1,15 +1,15 @@
-all: hellofromc 
+all: helloc 
 
 
-hellofromc: hellofromc.o helloint.o
-	gcc hellofromc.o helloint.o -o hellofromc -z noexecstack
+helloc: helloc.o helloint.o
+	gcc helloc.o helloint.o -o helloc -z noexecstack
 
-hellofromc.o : hellofromc.c
-	gcc -c hellofromc.c
+helloc.o : helloc.c
+	gcc -c helloc.c
 
 helloint.o: helloint.asm
 	nasm  -f elf64 -l helloint.lst helloint.asm
 
 
 clean:
-	rm hellofromc.o helloint.o helloint.lst 
+	rm helloc.o helloint.o helloint.lst 

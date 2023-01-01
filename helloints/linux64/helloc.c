@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdbool.h>
 
 extern int helloint(int a);
 extern int helloints(int , int , int , int , int , int , int , int , int );

@@ -1,5 +1,4 @@
 #include <stdio.h>
-/* #include <stdbool.h> */
 
 extern int helloint(int );
 extern int helloints(int , int , int , int , int , int , int , int , int );
@@ -8,9 +7,6 @@ extern int helloints(int , int , int , int , int , int , int , int , int );
 int hellocints(a1, a2, a3, a4, a5, a6, a7, a8, a9) {  
 /* int hellocints(int , int , int , int , int , int , int , int , int ) { */
 	int ret;
-	/*
-	, a1, a2, a3, a4, a5, a6, a7, a8, a9;
-	*/
 	ret = 0;
 	ret = a1;
 	ret += a2;
