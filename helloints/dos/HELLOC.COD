@@ -1,0 +1,444 @@
+;	Static Name Aliases
+;
+	TITLE   helloc
+
+	.287
+HELLOC_TEXT	SEGMENT  BYTE PUBLIC 'CODE'
+HELLOC_TEXT	ENDS
+_DATA	SEGMENT  WORD PUBLIC 'DATA'
+_DATA	ENDS
+CONST	SEGMENT  WORD PUBLIC 'CONST'
+CONST	ENDS
+_BSS	SEGMENT  WORD PUBLIC 'BSS'
+_BSS	ENDS
+DGROUP	GROUP	CONST,	_BSS,	_DATA
+	ASSUME  CS: HELLOC_TEXT, DS: DGROUP, SS: DGROUP, ES: DGROUP
+EXTRN	_helloint:FAR
+EXTRN	_helloints:FAR
+EXTRN	__chkstk:FAR
+EXTRN	_printf:FAR
+_DATA	SEGMENT
+_DATA	ENDS
+_DATA      SEGMENT
+$SG37	DB	'Hello, world! DOS 16-bit',  00H
+	EVEN
+$SG41	DB	'%s',  0aH,  00H
+$SG42	DB	'odd',  00H
+$SG43	DB	'even',  00H
+	EVEN
+$SG44	DB	'Return value: %d, Integer a = %d is %s',  0aH,  00H
+$SG45	DB	'odd',  00H
+$SG46	DB	'even',  00H
+	EVEN
+$SG47	DB	'Return value: %d, Integer a = %d is %s',  0aH,  00H
+$SG48	DB	'odd',  00H
+$SG49	DB	'even',  00H
+	EVEN
+$SG50	DB	'Return value: %d, Integer a = %d is %s',  0aH,  00H
+$SG51	DB	'odd',  00H
+$SG52	DB	'even',  00H
+	EVEN
+$SG53	DB	'Return value: %d, Integer a = %d is %s',  0aH,  00H
+$SG54	DB	'odd',  00H
+$SG55	DB	'even',  00H
+	EVEN
+$SG56	DB	'Return value: %d, Integer a = %d is %s',  0aH,  00H
+$SG57	DB	'rc=%d (%d %d %d %d %d %d %d %d %d)',  0aH,  00H
+$SG58	DB	'rc=%d (%d %d %d %d %d %d %d %d %d)',  0aH,  00H
+$SG59	DB	'rc=%d (%d %d %d %d %d %d %d %d %d)',  0aH,  00H
+_DATA      ENDS
+HELLOC_TEXT      SEGMENT
+;	a1 = 6
+;	a2 = 8
+;	a3 = 10
+;	a4 = 12
+;	a5 = 14
+;	a6 = 16
+;	a7 = 18
+;	a8 = 20
+;	a9 = 22
+;|*** #include <stdio.h>
+;|*** /* #include <stdbool.h> */
+;|*** 
+;|*** extern int helloint(int );
+;|*** extern int helloints(int , int , int , int , int , int , int , int , int );
+;|*** 
+;|*** /* int hellocints(int a1, int a2, int a3, int a4, int a5, int a6, int a7, int a8, int a9) { */
+;|*** int hellocints(a1, a2, a3, a4, a5, a6, a7, a8, a9) {  
+; Line 8
+	PUBLIC	_hellocints
+_hellocints	PROC FAR
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+	*** 000003	b8 02 00 		mov	ax,2
+	*** 000006	9a 00 00 00 00 		call	FAR PTR __chkstk
+;	ret = -2
+;|*** /* int hellocints(int , int , int , int , int , int , int , int , int ) { */
+;|*** 	int ret;
+;|*** 	/*
+;|*** 	, a1, a2, a3, a4, a5, a6, a7, a8, a9;
+;|*** 	*/
+;|*** 	ret = 0;
+; Line 14
+	*** 00000b	c7 46 fe 00 00 		mov	WORD PTR [bp-2],0	;ret
+;|*** 	ret = a1;
+; Line 15
+	*** 000010	8b 46 06 		mov	ax,[bp+6]	;a1
+	*** 000013	89 46 fe 		mov	[bp-2],ax	;ret
+;|*** 	ret += a2;
+; Line 16
+	*** 000016	8b 46 08 		mov	ax,[bp+8]	;a2
+	*** 000019	01 46 fe 		add	[bp-2],ax	;ret
+;|*** 	ret += a3;
+; Line 17
+	*** 00001c	8b 46 0a 		mov	ax,[bp+10]	;a3
+	*** 00001f	01 46 fe 		add	[bp-2],ax	;ret
+;|*** 	ret += a4;
+; Line 18
+	*** 000022	8b 46 0c 		mov	ax,[bp+12]	;a4
+	*** 000025	01 46 fe 		add	[bp-2],ax	;ret
+;|*** 	ret += a5;
+; Line 19
+	*** 000028	8b 46 0e 		mov	ax,[bp+14]	;a5
+	*** 00002b	01 46 fe 		add	[bp-2],ax	;ret
+;|*** 	ret += a6;
+; Line 20
+	*** 00002e	8b 46 10 		mov	ax,[bp+16]	;a6
+	*** 000031	01 46 fe 		add	[bp-2],ax	;ret
+;|*** 	ret += a7;
+; Line 21
+	*** 000034	8b 46 12 		mov	ax,[bp+18]	;a7
+	*** 000037	01 46 fe 		add	[bp-2],ax	;ret
+;|*** 	ret += a8;
+; Line 22
+	*** 00003a	8b 46 14 		mov	ax,[bp+20]	;a8
+	*** 00003d	01 46 fe 		add	[bp-2],ax	;ret
+;|*** 	ret += a9;
+; Line 23
+	*** 000040	8b 46 16 		mov	ax,[bp+22]	;a9
+	*** 000043	01 46 fe 		add	[bp-2],ax	;ret
+;|*** 
+;|*** 	return ret;
+; Line 25
+	*** 000046	8b 46 fe 		mov	ax,[bp-2]	;ret
+	*** 000049	8b e5 			mov	sp,bp
+	*** 00004b	5d 			pop	bp
+	*** 00004c	cb 			ret	
+
+_hellocints	ENDP
+;|*** }
+;|*** 
+;|*** int main() {
+; Line 28
+	PUBLIC	_main
+_main	PROC FAR
+	*** 00004d	55 			push	bp
+	*** 00004e	8b ec 			mov	bp,sp
+	*** 000050	b8 08 00 		mov	ax,8
+	*** 000053	9a 00 00 00 00 		call	FAR PTR __chkstk
+;	rc = -2
+;	hello = -6
+;	a = -8
+;|*** /*	int argc;
+;|*** 	char *argv[]; */
+;|*** char *hello = "Hello, world! DOS 16-bit";
+; Line 31
+	*** 000058	b8 00 00 		mov	ax,OFFSET DGROUP:$SG37
+	*** 00005b	89 46 fa 		mov	[bp-6],ax	;hello
+	*** 00005e	8c 5e fc 		mov	[bp-4],ds
+;|*** int a = 0;
+; Line 32
+	*** 000061	c7 46 f8 00 00 		mov	WORD PTR [bp-8],0	;a
+;|*** int rc = 0;
+; Line 33
+	*** 000066	c7 46 fe 00 00 		mov	WORD PTR [bp-2],0	;rc
+;|*** 
+;|*** 	printf("%s\n",hello);
+; Line 35
+	*** 00006b	1e 			push	ds
+	*** 00006c	50 			push	ax
+	*** 00006d	b8 19 00 		mov	ax,OFFSET DGROUP:$SG41
+	*** 000070	1e 			push	ds
+	*** 000071	50 			push	ax
+	*** 000072	9a 00 00 00 00 		call	FAR PTR _printf
+	*** 000077	83 c4 08 		add	sp,8
+;|*** 
+;|*** 	a = 0;
+; Line 37
+	*** 00007a	c7 46 f8 00 00 		mov	WORD PTR [bp-8],0	;a
+;|*** 	rc = helloint(a);
+; Line 38
+	*** 00007f	2b c0 			sub	ax,ax
+	*** 000081	50 			push	ax
+	*** 000082	9a 00 00 00 00 		call	FAR PTR _helloint
+	*** 000087	83 c4 02 		add	sp,2
+	*** 00008a	89 46 fe 		mov	[bp-2],ax	;rc
+;|*** 	printf("Return value: %d, Integer a = %d is %s\n", rc, a, rc ? "odd" : "even");
+; Line 39
+	*** 00008d	0b c0 			or	ax,ax
+	*** 00008f	74 05 			je	$L20001
+	*** 000091	b8 1d 00 		mov	ax,OFFSET DGROUP:$SG42
+	*** 000094	eb 03 			jmp	SHORT $L20002
+					$L20001:
+	*** 000096	b8 21 00 		mov	ax,OFFSET DGROUP:$SG43
+					$L20002:
+	*** 000099	1e 			push	ds
+	*** 00009a	50 			push	ax
+	*** 00009b	ff 76 f8 		push	WORD PTR [bp-8]	;a
+	*** 00009e	ff 76 fe 		push	WORD PTR [bp-2]	;rc
+	*** 0000a1	b8 26 00 		mov	ax,OFFSET DGROUP:$SG44
+	*** 0000a4	1e 			push	ds
+	*** 0000a5	50 			push	ax
+	*** 0000a6	9a 00 00 00 00 		call	FAR PTR _printf
+	*** 0000ab	83 c4 0c 		add	sp,12
+;|*** 	a = 1;
+; Line 40
+	*** 0000ae	c7 46 f8 01 00 		mov	WORD PTR [bp-8],1	;a
+;|*** 	rc = helloint(a);
+; Line 41
+	*** 0000b3	b8 01 00 		mov	ax,1
+	*** 0000b6	50 			push	ax
+	*** 0000b7	9a 00 00 00 00 		call	FAR PTR _helloint
+	*** 0000bc	83 c4 02 		add	sp,2
+	*** 0000bf	89 46 fe 		mov	[bp-2],ax	;rc
+;|*** 	printf("Return value: %d, Integer a = %d is %s\n", rc, a, rc ? "odd" : "even");
+; Line 42
+	*** 0000c2	0b c0 			or	ax,ax
+	*** 0000c4	74 05 			je	$L20003
+	*** 0000c6	b8 4e 00 		mov	ax,OFFSET DGROUP:$SG45
+	*** 0000c9	eb 03 			jmp	SHORT $L20004
+					$L20003:
+	*** 0000cb	b8 52 00 		mov	ax,OFFSET DGROUP:$SG46
+					$L20004:
+	*** 0000ce	1e 			push	ds
+	*** 0000cf	50 			push	ax
+	*** 0000d0	ff 76 f8 		push	WORD PTR [bp-8]	;a
+	*** 0000d3	ff 76 fe 		push	WORD PTR [bp-2]	;rc
+	*** 0000d6	b8 57 00 		mov	ax,OFFSET DGROUP:$SG47
+	*** 0000d9	1e 			push	ds
+	*** 0000da	50 			push	ax
+	*** 0000db	9a 00 00 00 00 		call	FAR PTR _printf
+	*** 0000e0	83 c4 0c 		add	sp,12
+;|*** 	a = 2;
+; Line 43
+	*** 0000e3	c7 46 f8 02 00 		mov	WORD PTR [bp-8],2	;a
+;|*** 	rc = helloint(a);
+; Line 44
+	*** 0000e8	b8 02 00 		mov	ax,2
+	*** 0000eb	50 			push	ax
+	*** 0000ec	9a 00 00 00 00 		call	FAR PTR _helloint
+	*** 0000f1	83 c4 02 		add	sp,2
+	*** 0000f4	89 46 fe 		mov	[bp-2],ax	;rc
+;|*** 	printf("Return value: %d, Integer a = %d is %s\n", rc, a, rc ? "odd" : "even");
+; Line 45
+	*** 0000f7	0b c0 			or	ax,ax
+	*** 0000f9	74 05 			je	$L20005
+	*** 0000fb	b8 7f 00 		mov	ax,OFFSET DGROUP:$SG48
+	*** 0000fe	eb 03 			jmp	SHORT $L20006
+					$L20005:
+	*** 000100	b8 83 00 		mov	ax,OFFSET DGROUP:$SG49
+					$L20006:
+	*** 000103	1e 			push	ds
+	*** 000104	50 			push	ax
+	*** 000105	ff 76 f8 		push	WORD PTR [bp-8]	;a
+	*** 000108	ff 76 fe 		push	WORD PTR [bp-2]	;rc
+	*** 00010b	b8 88 00 		mov	ax,OFFSET DGROUP:$SG50
+	*** 00010e	1e 			push	ds
+	*** 00010f	50 			push	ax
+	*** 000110	9a 00 00 00 00 		call	FAR PTR _printf
+	*** 000115	83 c4 0c 		add	sp,12
+;|*** 	a = 3;
+; Line 46
+	*** 000118	c7 46 f8 03 00 		mov	WORD PTR [bp-8],3	;a
+;|*** 	rc = helloint(a);
+; Line 47
+	*** 00011d	b8 03 00 		mov	ax,3
+	*** 000120	50 			push	ax
+	*** 000121	9a 00 00 00 00 		call	FAR PTR _helloint
+	*** 000126	83 c4 02 		add	sp,2
+	*** 000129	89 46 fe 		mov	[bp-2],ax	;rc
+;|*** 	printf("Return value: %d, Integer a = %d is %s\n", rc, a, rc ? "odd" : "even");
+; Line 48
+	*** 00012c	0b c0 			or	ax,ax
+	*** 00012e	74 05 			je	$L20007
+	*** 000130	b8 b0 00 		mov	ax,OFFSET DGROUP:$SG51
+	*** 000133	eb 03 			jmp	SHORT $L20008
+					$L20007:
+	*** 000135	b8 b4 00 		mov	ax,OFFSET DGROUP:$SG52
+					$L20008:
+	*** 000138	1e 			push	ds
+	*** 000139	50 			push	ax
+	*** 00013a	ff 76 f8 		push	WORD PTR [bp-8]	;a
+	*** 00013d	ff 76 fe 		push	WORD PTR [bp-2]	;rc
+	*** 000140	b8 b9 00 		mov	ax,OFFSET DGROUP:$SG53
+	*** 000143	1e 			push	ds
+	*** 000144	50 			push	ax
+	*** 000145	9a 00 00 00 00 		call	FAR PTR _printf
+	*** 00014a	83 c4 0c 		add	sp,12
+;|*** 	a = 8;
+; Line 49
+	*** 00014d	c7 46 f8 08 00 		mov	WORD PTR [bp-8],8	;a
+;|*** 	rc = helloint(a);
+; Line 50
+	*** 000152	b8 08 00 		mov	ax,8
+	*** 000155	50 			push	ax
+	*** 000156	9a 00 00 00 00 		call	FAR PTR _helloint
+	*** 00015b	83 c4 02 		add	sp,2
+	*** 00015e	89 46 fe 		mov	[bp-2],ax	;rc
+;|*** 	printf("Return value: %d, Integer a = %d is %s\n", rc, a, rc ? "odd" : "even");
+; Line 51
+	*** 000161	0b c0 			or	ax,ax
+	*** 000163	74 05 			je	$L20009
+	*** 000165	b8 e1 00 		mov	ax,OFFSET DGROUP:$SG54
+	*** 000168	eb 03 			jmp	SHORT $L20010
+					$L20009:
+	*** 00016a	b8 e5 00 		mov	ax,OFFSET DGROUP:$SG55
+					$L20010:
+	*** 00016d	1e 			push	ds
+	*** 00016e	50 			push	ax
+	*** 00016f	ff 76 f8 		push	WORD PTR [bp-8]	;a
+	*** 000172	ff 76 fe 		push	WORD PTR [bp-2]	;rc
+	*** 000175	b8 ea 00 		mov	ax,OFFSET DGROUP:$SG56
+	*** 000178	1e 			push	ds
+	*** 000179	50 			push	ax
+	*** 00017a	9a 00 00 00 00 		call	FAR PTR _printf
+	*** 00017f	83 c4 0c 		add	sp,12
+;|*** 	rc = helloints(1, 2, 3, 4, 5, 6, 7, 8, 9);
+; Line 52
+	*** 000182	b8 09 00 		mov	ax,9
+	*** 000185	50 			push	ax
+	*** 000186	b8 08 00 		mov	ax,8
+	*** 000189	50 			push	ax
+	*** 00018a	b8 07 00 		mov	ax,7
+	*** 00018d	50 			push	ax
+	*** 00018e	b8 06 00 		mov	ax,6
+	*** 000191	50 			push	ax
+	*** 000192	b8 05 00 		mov	ax,5
+	*** 000195	50 			push	ax
+	*** 000196	b8 04 00 		mov	ax,4
+	*** 000199	50 			push	ax
+	*** 00019a	b8 03 00 		mov	ax,3
+	*** 00019d	50 			push	ax
+	*** 00019e	b8 02 00 		mov	ax,2
+	*** 0001a1	50 			push	ax
+	*** 0001a2	b8 01 00 		mov	ax,1
+	*** 0001a5	50 			push	ax
+	*** 0001a6	9a 00 00 00 00 		call	FAR PTR _helloints
+	*** 0001ab	83 c4 12 		add	sp,18
+	*** 0001ae	89 46 fe 		mov	[bp-2],ax	;rc
+;|*** 	printf("rc=%d (%d %d %d %d %d %d %d %d %d)\n", rc, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+; Line 53
+	*** 0001b1	b8 09 00 		mov	ax,9
+	*** 0001b4	50 			push	ax
+	*** 0001b5	b8 08 00 		mov	ax,8
+	*** 0001b8	50 			push	ax
+	*** 0001b9	b8 07 00 		mov	ax,7
+	*** 0001bc	50 			push	ax
+	*** 0001bd	b8 06 00 		mov	ax,6
+	*** 0001c0	50 			push	ax
+	*** 0001c1	b8 05 00 		mov	ax,5
+	*** 0001c4	50 			push	ax
+	*** 0001c5	b8 04 00 		mov	ax,4
+	*** 0001c8	50 			push	ax
+	*** 0001c9	b8 03 00 		mov	ax,3
+	*** 0001cc	50 			push	ax
+	*** 0001cd	b8 02 00 		mov	ax,2
+	*** 0001d0	50 			push	ax
+	*** 0001d1	b8 01 00 		mov	ax,1
+	*** 0001d4	50 			push	ax
+	*** 0001d5	ff 76 fe 		push	WORD PTR [bp-2]	;rc
+	*** 0001d8	b8 12 01 		mov	ax,OFFSET DGROUP:$SG57
+	*** 0001db	1e 			push	ds
+	*** 0001dc	50 			push	ax
+	*** 0001dd	9a 00 00 00 00 		call	FAR PTR _printf
+	*** 0001e2	83 c4 18 		add	sp,24
+;|*** /*
+;|*** 	rc = hellocints(1, 2, 3, 4, 5, 6, 7, 8, 9);
+;|*** 	printf("crc=%d (%d %d %d %d %d %d %d %d %d)\n", rc, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+;|*** */
+;|*** 
+;|*** 	rc = helloints(1, 1, 1, 1, 1, 5, 0, 0, 0);
+; Line 59
+	*** 0001e5	2b c0 			sub	ax,ax
+	*** 0001e7	50 			push	ax
+	*** 0001e8	50 			push	ax
+	*** 0001e9	50 			push	ax
+	*** 0001ea	b8 05 00 		mov	ax,5
+	*** 0001ed	50 			push	ax
+	*** 0001ee	b8 01 00 		mov	ax,1
+	*** 0001f1	50 			push	ax
+	*** 0001f2	50 			push	ax
+	*** 0001f3	50 			push	ax
+	*** 0001f4	50 			push	ax
+	*** 0001f5	50 			push	ax
+	*** 0001f6	9a 00 00 00 00 		call	FAR PTR _helloints
+	*** 0001fb	83 c4 12 		add	sp,18
+	*** 0001fe	89 46 fe 		mov	[bp-2],ax	;rc
+;|*** 	printf("rc=%d (%d %d %d %d %d %d %d %d %d)\n", rc, 1, 1, 1, 1, 1, 5, 0, 0, 0);
+; Line 60
+	*** 000201	2b c0 			sub	ax,ax
+	*** 000203	50 			push	ax
+	*** 000204	50 			push	ax
+	*** 000205	50 			push	ax
+	*** 000206	b8 05 00 		mov	ax,5
+	*** 000209	50 			push	ax
+	*** 00020a	b8 01 00 		mov	ax,1
+	*** 00020d	50 			push	ax
+	*** 00020e	50 			push	ax
+	*** 00020f	50 			push	ax
+	*** 000210	50 			push	ax
+	*** 000211	50 			push	ax
+	*** 000212	ff 76 fe 		push	WORD PTR [bp-2]	;rc
+	*** 000215	b8 36 01 		mov	ax,OFFSET DGROUP:$SG58
+	*** 000218	1e 			push	ds
+	*** 000219	50 			push	ax
+	*** 00021a	9a 00 00 00 00 		call	FAR PTR _printf
+	*** 00021f	83 c4 18 		add	sp,24
+;|*** 
+;|*** 	rc = helloints(9, 9, 9, 9, 10, 10, 10, 10, 10);
+; Line 62
+	*** 000222	b8 0a 00 		mov	ax,10
+	*** 000225	50 			push	ax
+	*** 000226	50 			push	ax
+	*** 000227	50 			push	ax
+	*** 000228	50 			push	ax
+	*** 000229	50 			push	ax
+	*** 00022a	b8 09 00 		mov	ax,9
+	*** 00022d	50 			push	ax
+	*** 00022e	50 			push	ax
+	*** 00022f	50 			push	ax
+	*** 000230	50 			push	ax
+	*** 000231	9a 00 00 00 00 		call	FAR PTR _helloints
+	*** 000236	83 c4 12 		add	sp,18
+	*** 000239	89 46 fe 		mov	[bp-2],ax	;rc
+;|*** 	printf("rc=%d (%d %d %d %d %d %d %d %d %d)\n", rc, 9, 9, 9, 9, 10, 10, 10, 10, 10);
+; Line 63
+	*** 00023c	b8 0a 00 		mov	ax,10
+	*** 00023f	50 			push	ax
+	*** 000240	50 			push	ax
+	*** 000241	50 			push	ax
+	*** 000242	50 			push	ax
+	*** 000243	50 			push	ax
+	*** 000244	b8 09 00 		mov	ax,9
+	*** 000247	50 			push	ax
+	*** 000248	50 			push	ax
+	*** 000249	50 			push	ax
+	*** 00024a	50 			push	ax
+	*** 00024b	ff 76 fe 		push	WORD PTR [bp-2]	;rc
+	*** 00024e	b8 5a 01 		mov	ax,OFFSET DGROUP:$SG59
+	*** 000251	1e 			push	ds
+	*** 000252	50 			push	ax
+	*** 000253	9a 00 00 00 00 		call	FAR PTR _printf
+;|*** /*
+;|*** 	rc = hellocints(1, 1, 1, 1, 1, 5, 0, 0, 0);
+;|*** 	printf("crc=%d\n", rc);
+;|*** */
+;|*** }
+; Line 68
+	*** 000258	8b e5 			mov	sp,bp
+	*** 00025a	5d 			pop	bp
+	*** 00025b	cb 			ret	
+
+_main	ENDP
+HELLOC_TEXT	ENDS
+END
