@@ -1,6 +1,5 @@
 ;global helloint:function
 ;:global helloints:function
-
 ;hellodos_l	equ	1
 
 PUBLIC _helloint

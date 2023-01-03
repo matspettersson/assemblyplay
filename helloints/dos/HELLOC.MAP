@@ -1,0 +1,52 @@
+
+
+ Start  Stop   Length Name                   Class
+ 00000H 01491H 01492H _TEXT                  CODE
+ 01492H 01492H 00000H C_ETEXT                ENDCODE
+ 01492H 014C8H 00037H CODE                   
+ 014D0H 0152AH 0005BH NULL                   BEGDATA
+ 0152CH 01873H 00348H _DATA                  DATA
+ 01874H 01881H 0000EH CDATA                  DATA
+ 01882H 01882H 00000H XIB                    DATA
+ 01882H 01887H 00006H XI                     DATA
+ 01888H 01888H 00000H XIE                    DATA
+ 01888H 01888H 00000H XPB                    DATA
+ 01888H 01889H 00002H XP                     DATA
+ 0188AH 0188AH 00000H XPE                    DATA
+ 0188AH 0188AH 00000H XCB                    DATA
+ 0188AH 0188BH 00002H XC                     DATA
+ 0188CH 0188CH 00000H XCE                    DATA
+ 0188CH 0188CH 00000H CONST                  CONST
+ 0188CH 018AFH 00024H _BSS                   BSS
+ 018B0H 01CAFH 00400H c_common               BSS
+ 01CB0H 024AFH 00800H STACK                  STACK
+
+ Origin   Group
+ 014D:0   DGROUP
+ 0000:0   IGROUP
+HELLOC.OBJ(helloc.c) : error L2002: fixup overflow
+  near 01B6 in segment _TEXT offset 479H
+  frm seg CODE, tgt seg _TEXT, tgt offset 0019
+HELLOC.OBJ(helloc.c) : error L2002: fixup overflow
+  near 0180 in segment _TEXT offset 484H
+  frm seg CODE, tgt seg _TEXT, tgt offset 0019
+HELLOC.OBJ(helloc.c) : error L2002: fixup overflow
+  near 0135 in segment _TEXT offset 48FH
+  frm seg CODE, tgt seg _TEXT, tgt offset 0019
+HELLOC.OBJ(helloc.c) : error L2002: fixup overflow
+  near 00EB in segment _TEXT offset 4A0H
+  frm seg CODE, tgt seg _TEXT, tgt offset 0002
+HELLOC.OBJ(helloc.c) : error L2002: fixup overflow
+  near 00BC in segment _TEXT offset 4B1H
+  frm seg CODE, tgt seg _TEXT, tgt offset 0002
+HELLOC.OBJ(helloc.c) : error L2002: fixup overflow
+  near 008D in segment _TEXT offset 4C2H
+  frm seg CODE, tgt seg _TEXT, tgt offset 0002
+HELLOC.OBJ(helloc.c) : error L2002: fixup overflow
+  near 005E in segment _TEXT offset 4D3H
+  frm seg CODE, tgt seg _TEXT, tgt offset 0002
+HELLOC.OBJ(helloc.c) : error L2002: fixup overflow
+  near 002F in segment _TEXT offset 4E4H
+  frm seg CODE, tgt seg _TEXT, tgt offset 0002
+
+Program entry point at 0000:01FF

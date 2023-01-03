@@ -3,12 +3,12 @@ global _helloints
 
 ;section .data
 
-section .text
+section ._text
 
 _helloint:
       push	bp
       mov   bp, sp
-      mov	ax,[bp+6]	;a1
+      mov	ax,[bp+4]	;a1
       and   ax, 1
       jz    even1
       mov   ax, 1
@@ -21,12 +21,13 @@ finish1:
 ;      pop	dx
       mov	sp,bp
       pop	bp
-      retf      
+      ret      
 
 _helloints:
       push	bp
       mov	bp,sp
-      mov	ax,[bp+6]	
+      mov	ax,[bp+4]
+	add	ax, [bp+6]	
       add	ax,[bp+8]
       add	ax,[bp+10]
       add	ax,[bp+12]
@@ -34,6 +35,6 @@ _helloints:
       add	ax,[bp+16]
       add	ax,[bp+18]
       add	ax,[bp+20]
-      add	ax,[bp+22]	
+;      add	ax,[bp+22]	
       pop	bp
-      retf
+      ret
