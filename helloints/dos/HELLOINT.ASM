@@ -1,6 +1,8 @@
 ;global helloint:function
 ;:global helloints:function
 
+;hellodos_l	equ	1
+
 PUBLIC _helloint
 PUBLIC _helloints
 
@@ -19,8 +21,9 @@ DGROUP	GROUP	CONST,	_BSS,	_DATA
 	ASSUME  CS: _TEXT, DS: DGROUP, SS: DGROUP, ES: DGROUP
 
 
-;_DATA SEGMENT
-;_DATA ENDS
+_DATA SEGMENT
+;	db	hellodos_l	1
+_DATA ENDS
 ;_STACK SEGMENT
 ;_STACK ENDS
 
@@ -29,7 +32,12 @@ _TEXT SEGMENT
 
 ;section .text
 
-_helloint PROC
+ifdef hellodos_l
+_helloint PROC FAR
+else
+_helloint PROC NEAR
+endif
+
 ; Integer arguments are passed in registers RCX, RDX, R8, and R9.
 ; https://learn.microsoft.com/en-us/cpp/build/x64-calling-convention?view=msvc-170
 ;helloint:
@@ -63,8 +71,11 @@ _helloint PROC
 ;      push	di
 ;      push	si
 
+ifdef hellodos_l
+      mov	ax,[bp+6]	;a1
+else
       mov	ax,[bp+4]	;a1
-
+endif
       and   ax, 1
       jz    even1
       mov   ax, 1
@@ -103,12 +114,23 @@ _helloint ENDP
 
 
 ;helloints:
-_helloints   PROC
+
+ifdef hellodos_l
+_helloints PROC FAR
+else
+_helloints PROC NEAR
+endif
+
       push	bp
 
       mov	bp,sp
+
+ifdef hellodos_l
+      mov	ax,[bp+6]	;a1
+else
       mov	ax,[bp+4]	;a1
       add	ax,[bp+6]	;a2
+endif
       add	ax,[bp+8]
       add	ax,[bp+10]
       add	ax,[bp+12]
@@ -116,7 +138,9 @@ _helloints   PROC
       add	ax,[bp+16]
       add	ax,[bp+18]
       add	ax,[bp+20]
-
+ifdef hellodos_l
+      add	ax,[bp+22]
+endif
       pop	bp
       ret
 _helloints ENDP

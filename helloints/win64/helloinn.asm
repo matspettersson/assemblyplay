@@ -1,36 +1,34 @@
-PUBLIC helloint
-PUBLIC helloints
+global helloint	;:function
+global helloints	;:function
 
-_DATA SEGMENT
-_DATA ENDS
+;section .data
 
-_TEXT SEGMENT
 
-helloint PROC
-; Integer arguments are passed in registers RCX, RDX, R8, and R9.
-; https://learn.microsoft.com/en-us/cpp/build/x64-calling-convention?view=msvc-170
-;helloint:
+section .text
+
+helloint:
       push	rbp
       mov   rbp, rsp
+;      push	rdx
+;      push	rdi
+;      push	rsi
 
-;      mov   rax, rdi
       mov   rax, rcx
       and   rax, 1
-      jz    evenw64
+      jz    even1
       mov   rax, 1
-      jmp   finishw64
-;even:
-evenw64:
+      jmp   finish
+even1:
      mov  rax, 0
 
-finishw64:
+finish:
+ ;     pop	rsi
+ ;     pop	rdi
+ ;     pop	rdx
       mov	rsp,rbp
       pop	rbp
 
       ret
-
-helloint ENDP
-
 ;
 ;In 64-bit Linux system, function arguments of type integer/pointers are passed to the callee function in the following way:
 ;Arguments 1-6 are passed via registers RDI, RSI, RDX, RCX, R8, R9 respectively;
@@ -49,42 +47,9 @@ helloint ENDP
 ;Argument 7 can be accessed via rbp + 0x10, argument 8 via rbp + 0x18 and so on.
 
 
-;helloints:
-helloints   PROC
+helloints:
       push	rbp
-      ;mov   rbp, rsp
-      ;push	rdx
-      ;push	rdi
-      ;push	rsi
-; Integer arguments are passed in registers RCX, RDX, R8, and R9.
-      mov   rax, rcx
-      add   rax, rdx
-      add   rax, r8
-      add   rax, r9
-
-;      mov   rax, [rsp + 32]
-;      add   rax, [rsp + 40]
-;      add   rax, [rsp + 48]
-;      add   rax, [rsp + 56]
-;a1$ = 32
-;a2$ = 40
-;a3$ = 48
-;a4$ = 56
-;a5$ = 64
-;a6$ = 72
-;a7$ = 80
-;a8$ = 88
-;a9$ = 96
-
-      add   rax, [rsp + 30h]
-      add   rax, [rsp + 38h]
-      add   rax, [rsp + 40h]
-      add   rax, [rsp + 48h]
-      add   rax, [rsp + 50h]
-;      add   rax, [rsp + 18h]
-;      add   rax, [rsp + 20h]
-;      add   rax, [rsp + 28h]
-;      add   rax, [rsp + 30h]
+      mov   rbp, rsp
 
 ;      mov   rax, rdi
 ;      add   rax, rsi
@@ -92,22 +57,22 @@ helloints   PROC
 ;      add   rax, rcx
 ;      add   rax, r8
 ;      add   rax, r9
-      ;add   rax, [rsp + 0x10]
-;      add   rax, [rsp + 10h]
-      ;add   rax, [rsp + 0x18]
-;      add   rax, [rsp + 18h]
-      ;add   rax, [rsp + 0x20]
-;      add   rax, [rsp + 20h]
 
-      ;pop	rsi
-      ;pop	rdi
-      ;pop	rdx
-      ;mov	rsp,rbp
+;      add   rax, [rbp + 0x10]
+;      add   rax, [rbp + 0x18]
+;      add   rax, [rbp + 0x20]
+
+      mov   rax, rcx
+      add   rax, rdx
+      add   rax, r8
+      add   rax, r9
+      add   rax, [rsp + 30h]
+      add   rax, [rsp + 38h]
+      add   rax, [rsp + 40h]
+      add   rax, [rsp + 48h]
+      add   rax, [rsp + 50h]
+
+      mov	rsp,rbp
       pop	rbp
 
       ret
-helloints ENDP
-
-_TEXT ENDS
-
-END

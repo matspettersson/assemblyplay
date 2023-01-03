@@ -1,8 +1,8 @@
 ;global helloint:function
-;global helloints:function
+;:global helloints:function
 
-PUBLIC _helloint
-PUBLIC _helloints
+PUBLIC  _helloint
+PUBLIC  _helloints
 
 ;assume cs:_TEXT, ds:_DATA, es: _DATA, ss:_STACK
 
@@ -63,7 +63,7 @@ _helloint PROC
 ;      push	di
 ;      push	si
 
-      mov	ax,[bp+4]	;a1
+      mov	ax,[bp+6]	;a1
 
       and   ax, 1
       jz    even1
@@ -103,12 +103,13 @@ _helloint ENDP
 
 
 ;helloints:
-_helloints   PROC
+_helloints  PROC
       push	bp
 
       mov	bp,sp
-      mov	ax,[bp+4]	;a1
-      add	ax,[bp+6]	;a2
+;      mov	ax,[bp+4]	;a1
+	mov	ax,[bp+6]
+;      add	ax,[bp+6]	;a2
       add	ax,[bp+8]
       add	ax,[bp+10]
       add	ax,[bp+12]
@@ -116,7 +117,7 @@ _helloints   PROC
       add	ax,[bp+16]
       add	ax,[bp+18]
       add	ax,[bp+20]
-
+	add	ax, [bp+22]
       pop	bp
       ret
 _helloints ENDP
