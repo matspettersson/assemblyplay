@@ -7,7 +7,7 @@ section .bss
 
 section .rodata
 roman db    'I', 'V', 'X', 'L', 'C', 'D', 'M', 0
-arab  dw    1, 5, 10, 50, 100, 500, 1000, 0
+arab  dq    1, 5, 10, 50, 100, 500, 1000, 0
 
 
 section .text
@@ -17,8 +17,7 @@ section .text
 ; rdi = str
 romanToInt:
       xor   rcx, rcx
-      xor   rdx, rdx
-loop:
+loopstr:
       xor   rbx, rbx
       xor   rdx, rdx
 
@@ -28,17 +27,25 @@ loop:
       jz    end
 
       mov   r8, roman
-      mov   r9b, [r8 + rcx]
+      xor   rdx, rdx
+looproman:
+      cmp   byte [r8 + rdx], 0     ;Check the end of string
+      jle   endroman
+      mov   r9b, [r8 + rdx]
       cmp   byte [rdi + rcx], r9b
-      je    e1
-
-
+      je    e2
+      inc   rdx
+      jmp   looproman
+e2:   
+      mov   r10, arab
+      mov   rcx, [r10 + rdx *8]
+      jmp   end
+endroman:
       inc   rcx                     ;increment our counter
-      jmp   loop
+      jmp   loopstr
 
-e1:   mov   rcx, 64
+;e1:   mov   rcx, rdx
 end:
-
       mov   rax, rcx
 
       ret
