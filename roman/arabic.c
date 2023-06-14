@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-extern int arabicToStr(int);
+extern char *  arabicToString(int);
 // gdb --args roman X
 // x/s $rdi
 // p $rcx
@@ -11,8 +11,8 @@ int main(int argc, char *argv[]) {
 if(argc == 2) {
 	printf("Arabic number: %s\n", argv[1]);
 	int a = atoi(argv[1]);
-	int rc = arabicToStr(a);
-	printf("rc=%d\n", rc);
+	char *str = arabicToString(a);
+	printf("str=%s\n", str);
 	//rc = broman_to_int(argv[1]);
 	//printf("rc=%d\n", rc);
 

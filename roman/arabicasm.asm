@@ -1,4 +1,4 @@
-global romanToInt:function
+global arabicToString:function
 
 ;%ifidn __OUTPUT_FORMAT__, win64 
 ;      mov rax, rcx
@@ -9,7 +9,7 @@ global romanToInt:function
 
 ; No more than 3 of the same
 ; Max: 3999 = MMMCMXCIX
-
+; gdb --args arabic 2
 
 section .bss
 
@@ -19,48 +19,34 @@ arab  dq    1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1, 0           ; 
 
 section .text
 
-; rdi = str
-romanToInt:
+; rdi = int
+arabicToString:
       xor   rax, rax
       xor   r10, r10
       xor   r11, r11
       xor   r12, r12
       xor   rcx, rcx
+
       mov   r8, roman
       mov   r9, arab
-
-      call  strlen                                    ; length of rdi
-      mov   rcx, rax                                  ; Counter
-      xor   rax, rax                
-
+      mov   rdx, rdi
+      xor   rcx, rcx
 loopstr:
-      xor   rbx, rbx
-      xor   rdx, rdx
-
-      cmp   rcx, 0
+      cmp   rdx,0
       je    end
+      mov   bl, r8[rcx]
+      cmp   bl, 0
+      je    found0
 
-looproman:
-      cmp   byte [r8 + rdx], 0                        ; Check the end of array
-      jle   endroman
-      mov   r10b, [r8 + rdx]                          ; rdx = index in roman array
-      cmp   byte [rdi + rcx - 1], r10b                ; Match
-      je    romanmatch
-      inc   rdx
-      jmp   looproman
-romanmatch:
-      mov   r11,[r9 + rdx * 8]
-      cmp   r11, r12
-      jge   addval
-      sub   rax, r11                                  ; decrease sum with current value
-      jmp   endroman
-addval:
-      add   rax, r11                                  ; Add to rax
-endroman:
-      dec   rcx                                       ; decrease counter
-      mov   r12, r11                                  ; save current value
+      inc   rcx                                       ; increase counter
+      jmp   loopstr
+found0:
+      dec   rdx
+      inc   rcx                                       ; increase counter
       jmp   loopstr
 end:
+      mov   rax, r8
+      add   rax, rcx
       ret                                             ; return value in rax
 
 
