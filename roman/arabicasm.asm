@@ -14,40 +14,56 @@ global arabicToString:function
 section .bss
 
 section .rodata
-roman db    'M', 0, 'CM', 0, 'D', 0, 'CD', 0, 'C', 0, 'XC', 0, 'L', 0, 'XL', 0, 'X', 0, 'IX', 0, 'V', 0, 'IV', 0, 'I', 0      ; Roman symbols
-arab  dq    1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1, 0           ; Corresponding integer values
+roman       db    'M', 0, 'CM', 0, 'D', 0, 'CD', 0, 'C', 0, 'XC', 0, 'L', 0, 'XL', 0, 'X', 0, 'IX', 0, 'V', 0, 'IV', 0, 'I', 0      ; Roman symbols
+arabic      dq    1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1, 0           ; Corresponding integer values
+;retstr      db    20 dup(?)
+retstr      db    "Mats",0
 
 section .text
 
 ; rdi = int
 arabicToString:
       xor   rax, rax
-      xor   r10, r10
+      xor   rbx, rbx
+      xor   r10, r10                                  ; index of return string
       xor   r11, r11
       xor   r12, r12
-      xor   rcx, rcx
+      xor   rcx, rcx                                  ; counter for index in arabic
 
-      mov   r8, roman
-      mov   r9, arab
-      mov   rdx, rdi
-      xor   rcx, rcx
-loopstr:
-      cmp   rdx,0
+      lea   r8, roman
+      lea   r9, arabic
+      mov   rdx, rdi                                  ; holds the remainder
+
+
+loopa:
+      cmp   rdi, 0
       je    end
-      mov   bl, r8[rcx]
-      cmp   bl, 0
-      je    found0
-
+      mov   rbx, [r9 + rcx * 8]
+      cmp   rdi, rbx
+      jge   found0
       inc   rcx                                       ; increase counter
-      jmp   loopstr
+      jmp   loopa
 found0:
-      dec   rdx
+      sub   rdi, rbx                                  ; subtact the value found
+      push  rdi
+      push  rbx
+      push  rcx
+      call  getRomanNumber
+      pop   rcx
+      pop   rbx
+      pop   rdi
       inc   rcx                                       ; increase counter
-      jmp   loopstr
+      jmp   loopa
 end:
-      mov   rax, r8
-      add   rax, rcx
+;      mov   rax, r8
+      lea   rax, retstr
       ret                                             ; return value in rax
+
+
+
+getRomanNumber:
+
+      ret
 
 
 
@@ -66,3 +82,5 @@ strlen_null:
       pop   rdi
       pop   rcx                                       ; restore rcx
       ret   
+
+
