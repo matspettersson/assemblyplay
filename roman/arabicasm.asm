@@ -16,8 +16,8 @@ section .bss
 section .rodata
 roman       db    'M', 0, 'CM', 0, 'D', 0, 'CD', 0, 'C', 0, 'XC', 0, 'L', 0, 'XL', 0, 'X', 0, 'IX', 0, 'V', 0, 'IV', 0, 'I', 0      ; Roman symbols
 arabic      dq    1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1, 0           ; Corresponding integer values
-;retstr      db    20 dup(?)
-retstr      db    "Mats",0
+retstr      db    20 dup(0)
+;retstr      db    "Mats",0
 
 section .text
 
@@ -44,10 +44,11 @@ loopa:
       inc   rcx                                       ; increase counter
       jmp   loopa
 found0:
-      sub   rdi, rbx                                  ; subtact the value found
+      sub   rdi, rbx                                  ; subtract the value found
       push  rdi
       push  rbx
       push  rcx
+      mov   rdi, rcx
       call  getRomanNumber
       pop   rcx
       pop   rbx
@@ -57,12 +58,21 @@ found0:
 end:
 ;      mov   rax, r8
       lea   rax, retstr
-      ret                                             ; return value in rax
+      ret                                             ; return string in rax
 
 
 
 getRomanNumber:
-
+      cmp   rdi, 0
+      je    g1
+      push  rdi
+      mov   rdi, [r8 + rcx]
+      mov   rdx, rdi
+      lea   rcx, retstr
+;      call  strlen
+      call  strcpy
+      pop   rdi
+g1:      
       ret
 
 
@@ -83,4 +93,24 @@ strlen_null:
       pop   rcx                                       ; restore rcx
       ret   
 
+;;;;
 
+
+strcpy:
+	mov  r8b, BYTE [rdx] ; rdx = source
+	test r8b, r8b
+	mov  rax, rcx ; rax = destination
+	je   label2
+label1:
+	mov  BYTE [rax], r8b
+	mov  r8b, BYTE [rdx+1]
+	inc  rax
+	inc  rdx
+	test r8b, r8b
+	jne  label1
+label2:
+;	mov  BYTE PTR [rax], 0
+      mov   rax, rcx
+	; could set rax to rcx if wanting to return the destination pointer instead of a pointer to the end of destination
+	ret
+	
