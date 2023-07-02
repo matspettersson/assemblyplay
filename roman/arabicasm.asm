@@ -1,116 +1,100 @@
 global arabicToString:function
 
-;%ifidn __OUTPUT_FORMAT__, win64 
-;      mov rax, rcx
-;%elifidn __OUTPUT_FORMAT__, elf64 
-;      mov rax, rdi                ; linux rdi, win rcx
-;      mov rcx, rdi
-;%endif
-
 ; No more than 3 of the same
 ; Max: 3999 = MMMCMXCIX
-; gdb --args arabic 2
+; https://www.calculateme.com/roman-numerals/to-roman/3999
 
 section .bss
+retstr      db    25 dup(0)
+
 
 section .rodata
 roman       db    'M', 0, 'CM', 0, 'D', 0, 'CD', 0, 'C', 0, 'XC', 0, 'L', 0, 'XL', 0, 'X', 0, 'IX', 0, 'V', 0, 'IV', 0, 'I', 0      ; Roman symbols
-arabic      dq    1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1, 0           ; Corresponding integer values
-retstr      db    20 dup(0)
-;retstr      db    "Mats",0
+arabic      dw    1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1, 0           ; Corresponding integer values
+
 
 section .text
 
 ; rdi = int
 arabicToString:
-      xor   rax, rax
-      xor   rbx, rbx
-      xor   r10, r10                                  ; index of return string
-      xor   r11, r11
-      xor   r12, r12
+      xor   r10, r10                                  ; index for return string
       xor   rcx, rcx                                  ; counter for index in arabic
 
       lea   r8, roman
       lea   r9, arabic
+
       mov   rdx, rdi                                  ; holds the remainder
-
-
-loopa:
+loopa:                                                ; find the position in the table
       cmp   rdi, 0
       je    end
-      mov   rbx, [r9 + rcx * 8]
+      xor   rbx, rbx
+      mov   bx, [r9 + rcx * 2]
       cmp   rdi, rbx
       jge   found0
       inc   rcx                                       ; increase counter
       jmp   loopa
 found0:
-      sub   rdi, rbx                                  ; subtract the value found
       push  rdi
       push  rbx
       push  rcx
-      mov   rdi, rcx
+      mov   rdi, rcx                                  ; rcx holds the index in the array
       call  getRomanNumber
       pop   rcx
       pop   rbx
       pop   rdi
-      inc   rcx                                       ; increase counter
+      sub   rdi, rbx                                  ; subtract the value found
+      xor   rcx, rcx                                  ; counter for index in arabic
       jmp   loopa
 end:
-;      mov   rax, r8
       lea   rax, retstr
       ret                                             ; return string in rax
 
+getRomanNumber:                                       ; rdi holds index of string in array
+      push  rdi
 
-
-getRomanNumber:
+      xor   rcx, rcx
+      inc   rcx
+      xor   r11, r11
+      lea   r12, roman                                ; r12 contains pointer to roman string
+loopr1:
+      mov   r11b, byte [r12]
+      cmp   r11b, 0
+      je    foundnull
+      inc   r12
+      jmp   loopr1
+foundnull:
+      cmp   rcx, rdi
+      jge   ptrdone
+      inc   r12
+      inc   rcx
+      jmp   loopr1
+ptrdone:
+      mov   rax, r12
       cmp   rdi, 0
       je    g1
-      push  rdi
-      mov   rdi, [r8 + rcx]
-      mov   rdx, rdi
+      inc   rax
+      jmp   g2
+g1:
+      lea   rax, roman
+g2:      
+      mov   rdi, rax
       lea   rcx, retstr
-;      call  strlen
-      call  strcpy
+      call  copyRoman
       pop   rdi
-g1:      
+
       ret
 
+copyRoman:
+      xor   r13, r13
+copyR1:
+	mov   r13b, [rdi] ; rdi = source, rcx = target
+      cmp   r13b, 0
+      je    copyRomanDone
 
-
-strlen:         ;(rdi = *)
-      push  rcx                                       ; save and clear out counter
-      push  rdi
-      xor   rcx, rcx
-strlen_next:
-      cmp   [rdi], byte 0                             ; null byte yet?
-      jz    strlen_null                               ; yes, get out
-      inc   rcx                                       ; char is ok, count it
-      inc   rdi                                       ; move to next char
-      jmp   strlen_next                               ; process again
-strlen_null:
-      mov   rax, rcx                                  ; rcx = the length (put in rax)
-      pop   rdi
-      pop   rcx                                       ; restore rcx
-      ret   
-
-;;;;
-
-
-strcpy:
-	mov  r8b, BYTE [rdx] ; rdx = source
-	test r8b, r8b
-	mov  rax, rcx ; rax = destination
-	je   label2
-label1:
-	mov  BYTE [rax], r8b
-	mov  r8b, BYTE [rdx+1]
-	inc  rax
-	inc  rdx
-	test r8b, r8b
-	jne  label1
-label2:
-;	mov  BYTE PTR [rax], 0
+	mov   [rcx + r10], r13b
+      inc   r10
+      inc   rdi
+      jmp   copyR1
+copyRomanDone:
       mov   rax, rcx
-	; could set rax to rcx if wanting to return the destination pointer instead of a pointer to the end of destination
 	ret
-	

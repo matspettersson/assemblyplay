@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 extern char *  arabicToString(int);
+//extern char *  getPointerToRoman(int);
 //extern int  arabicToString(int);
 // gdb --args roman X
 // x/s $rdi
@@ -14,6 +15,14 @@ if(argc == 2) {
 	int a = atoi(argv[1]);
 	char *str = arabicToString(a);
 	printf("str=%s\n", str);
+
+/*	char *s2 = NULL;
+	int i;
+	for(i = 0; i < 12; i++) {
+		 s2 = getPointerToRoman(i);
+		printf("str=%s\n", s2);
+	}
+*/
 //	int b = arabicToString(a);
 //	printf("ret=%d\n", b);
 
