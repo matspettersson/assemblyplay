@@ -105,10 +105,19 @@ copyRomanDone:
       mov   rax, rcx
 	ret
 
-
-
-
-; rdi = str
+; romanToInt
+; rdi = parameter / str
+; r8 - roman array
+; r9 - arabic array
+; r10 - ptr in roman str
+; r11 - ptr in argument
+; r12 - value in arabic array
+; r13 - the sum
+; r14 - strlen roman string
+; r15 - entry in array
+; rbx - index in argument str
+; rcx - strlen argument
+; rdx - index/ptr in roman array
 romanToInt:
       xor   rax, rax
       xor   r10, r10
@@ -128,51 +137,51 @@ romanToInt:
       xor   rbx, rbx
       xor   rdx, rdx
 
-      cmp   rcx, 0
+      cmp   rcx, 0                                    ; Did a zero length string get passed?
       je    endr
 
 looproman:
-      cmp   rbx, rcx                            ; # of characters
+      cmp   rbx, rcx                                  ; rcx = # of characters
       jge    endr
 
-;      cmp   r15, 8                              ; 8 entries in the "array"
+;      cmp   r15, 8                                   ; 8 entries in the "array"
 ;      jge   end_of_array
 
-      mov   r10, r8                             ; r10 = points to base of roman array
-      add   r10, r11                          ; r10 plus a pointer to next string in roman array
+      mov   r10, r8                                   ; r10 = points to base of roman array
+      add   r10, r11                                  ; r10 plus a pointer to next string in roman array
       push  rdi
       mov   rdi, r10
-      call  strlen
-      mov   r14, rax                            ; r14 = strlen
+      call  strlen                                    ; Check length of string in roman array
+      mov   r14, rax                                  ; Save strlen in r14
       pop   rdi
 
       push  rdi
       push  rdx
-      add   rdi, rbx                           ; Iterate through the string argument
-      mov   rsi, r8
-      add   rsi, r11
-      mov   rdx, r14
+      add   rdi, rbx                                  ; Position in the string argument
+      mov   rsi, r8                                   ; The roman array
+      add   rsi, r11                                  ; Position
+      mov   rdx, r14                                  ; strlength of item in roman array
       call  strncmp
 
       pop   rdx
       pop   rdi
 
-      cmp   rax, 0
+      cmp   rax, 0                                    ; Match?
       je    romanmatch
 
-      inc   r15
-      inc   r14               ; add null
-      add   r11, r14      
-      add   rdx, r14
+      inc   r15                                       ; Counter for item in the array
+      inc   r14                                       ; add strlength and null to position in array
+      add   r11, r14                                  ;
+      add   rdx, r14                                  ;
 
       jmp   looproman
 romanmatch:
       xor   r12, r12
-      mov   r12w, word[r9 + r15 * 2]
+      mov   r12w, word[r9 + r15 * 2]                  ; Find corresponding value for roman string
       add   r13, r12                                  ; Add sum to r13
 
       add   rbx, r14
-      xor   rdx, rdx                      ; reset array index
+      xor   rdx, rdx                                  ; reset array index
       xor   r11, r11
       xor   r15, r15
 
@@ -185,7 +194,7 @@ end_of_array:
       jmp   looproman
 
 
-; strlen implementation using basic x86 instructions
+; strlen
 ; Inputs:
 ;   rdi - pointer to the string
 strlen:         ;(rdi = *)
@@ -193,7 +202,7 @@ strlen:         ;(rdi = *)
       push  rdi
       xor   rcx, rcx
 strlen_next:
-      cmp   [rdi + rcx], byte 0                             ; null byte yet?
+      cmp   [rdi + rcx], byte 0                       ; null byte yet?
       jz    strlen_null                               ; yes, get out
       inc   rcx                                       ; char is ok, count it
 ;      inc   rdi                                       ; move to next char
@@ -205,36 +214,32 @@ strlen_null:
       ret   
 
 
-
-; strncmp implementation using basic x86 instructions
+; strncmp
 ; Inputs:
 ;   rdi - pointer to the first string
 ;   rsi - pointer to the second string
 ;   rdx - maximum number of characters to compare
-
 strncmp:
       push  rbx
       push  rcx
-      xor rax, rax        ; result
-      xor rcx, rcx        ; counter
+      xor rax, rax                                    ; result
+      xor rcx, rcx                                    ; counter
 
 strncmp_loop:
-    cmp rcx, rdx        ; check if maximum number of characters to compare reached
+    cmp rcx, rdx                                      ; check if maximum number of characters to compare reached
     jge end_strncmp
 
 
-    mov bl, byte [rdi + rcx]    ; load character from the first string
-    mov bh, byte [rsi + rcx]    ; load character from the second string
-    cmp bl, bh                  ; compare characters
-    jne mismatch                ; jump if characters don't match
+    mov bl, byte [rdi + rcx]                          ; load character from the first string
+    mov bh, byte [rsi + rcx]                          ; load character from the second string
+    cmp bl, bh                                        ; compare characters
+    jne mismatch                                      ; jump if characters don't match
 
-    inc rcx                     ; increment counter
+    inc rcx                                           ; increment counter
     jmp strncmp_loop
 
 mismatch:
-;    sub al, dl                  ; calculate the difference
-    mov rax, 1                  ; set result to a non-zero value indicating mismatch
-;    jmp end_comparison_b
+    mov rax, 1                                        ; set result to a non-zero value indicating mismatch
 
 end_strncmp:
     pop     rcx

@@ -1,22 +1,13 @@
-all: roman arabic
+all: roar
 
-roman: roman.o romanasm.o
-	gcc roman.o romanasm.o  -z noexecstack -no-pie -o roman
+roar: roar.o roarasm.o
+	gcc roar.o roarasm.o  -z noexecstack -no-pie -o roar
 
-arabic: arabic.o arabicasm.o
-	gcc arabic.o arabicasm.o  -z noexecstack -no-pie -o arabic
+roarasm.o : roarasm.asm makefile
+	nasm -f elf64 -gdwarf roarasm.asm
 
-romanasm.o : romanasm.asm makefile
-	nasm -f elf64 -gdwarf romanasm.asm
-
-arabicasm.o : arabicasm.asm makefile
-	nasm -f elf64 -gdwarf arabicasm.asm
-
-roman.o : roman.c
-	gcc -c roman.c
-
-arabic.o : arabic.c
-	gcc -c arabic.c
+roar.o : roar.c
+	gcc -c roar.c
 
 clean:
-	rm roman roman.o romanasm.o arabic arabic.o arabicasm.o
+	rm roar roar.o roar.o 
