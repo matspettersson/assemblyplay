@@ -1,29 +1,27 @@
 global arabicToString:function
 global romanToInt:function
 
-; No more than 3 of the same
 ; Max: 3999 = MMMCMXCIX
 ; https://www.calculateme.com/roman-numerals/to-roman/3999
 
 section .bss
 retstr      db    25 dup(0)
 
-
 section .rodata
 roman       db    'M', 0, 'CM', 0, 'D', 0, 'CD', 0, 'C', 0, 'XC', 0, 'L', 0, 'XL', 0, 'X', 0, 'IX', 0, 'V', 0, 'IV', 0, 'I', 0      ; Roman symbols
 arabic      dw    1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1, 0           ; Corresponding integer values
 
 r_roman     db    'CM', 0, 'CD', 0, 'XC', 0, 'XL', 0, 'IX', 0, 'IV', 0, 'M', 0, 'D', 0, 'C', 0, 'L', 0, 'X', 0, 'V', 0, 'I', 0      ; Roman symbols
-r_romanlen  equ   $-r_roman
 r_arabic    dw    900, 400, 90, 40, 9, 4, 1000, 500, 100, 50, 10, 5, 1, 0           ; Corresponding integer values
-
 
 section .text
 
-
+; arabicToString
+;
 ; rdi = int
 arabicToString:
       xor   r10, r10                                  ; index for return string
+      xor   rax, rax                                  ; return code
       xor   rcx, rcx                                  ; counter for index in arabic
 
       lea   r8, roman
@@ -33,6 +31,10 @@ arabicToString:
 loopa:                                                ; find the position in the table
       cmp   rdi, 0
       je    end
+      mov   rax, -1
+      cmp   rdi, 3999
+      jg    end
+
       xor   rbx, rbx
       mov   bx, [r9 + rcx * 2]
       cmp   rdi, rbx
@@ -144,8 +146,8 @@ looproman:
       cmp   rbx, rcx                                  ; rcx = # of characters
       jge    endr
 
-;      cmp   r15, 8                                   ; 8 entries in the "array"
-;      jge   end_of_array
+      cmp   r15, 13                                   ; if more than 12 => error. 
+      jge   end_of_array
 
       mov   r10, r8                                   ; r10 = points to base of roman array
       add   r10, r11                                  ; r10 plus a pointer to next string in roman array
@@ -190,8 +192,8 @@ endr:
       mov   rax, r13
       ret                                             ; return value in rax
 end_of_array:
-      xor   r15, r15
-      jmp   looproman
+      mov   r13, -1                                   ; error
+      jmp   endr
 
 
 ; strlen

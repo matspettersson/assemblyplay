@@ -3,9 +3,6 @@
 
 extern char *arabicToString(int);
 extern int romanToInt(char *);
-// gdb --args roman X
-// x/s $rdi
-// p $rcx
 
 int main(int argc, char *argv[]) {
 
@@ -25,16 +22,5 @@ if(argc == 3) {
 } else { 
 	printf("Enter A or R + number...\n");
 }
-/*
-char *s0 = "CMIV";
-char *s1 = "IV";
-char *s2 = "MDMCCIV";
-char *s3 = "VIII";
-printf("%s = %d\n", s0, romanToInt(s0));
-printf("%s = %d\n", s1, romanToInt(s1));
-
-printf("%s = %d\n", s2, romanToInt(s2));
-printf("%s = %d\n", s3, romanToInt(s3));
-*/
 }
 
