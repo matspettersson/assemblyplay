@@ -1,17 +1,19 @@
-all: armstrong
+all: armstrong test
 
-#armstrong: armstrong.o armstrongasm.o
-#	gcc armstrong.o armstrongasm.o  -z noexecstack -no-pie -o armstrong
+test: test.o testasm.o
+	gcc test.o testasm.o  -z noexecstack -no-pie -o test
 
 armstrong: armstrongasm.o
 	ld armstrongasm.o -o armstrong 
 
-
-armstrongasm.o : armstrongasm.asm makefile
+armstrongasm.o: armstrongasm.asm makefile
 	nasm -f elf64 -gdwarf armstrongasm.asm
 
-armstrong.o : armstrong.c makefile
-#	gcc -c -S armstrong.c
+testasm.o: testasm.asm makefile
+	nasm -f elf64 -gdwarf testasm.asm
+
+test.o: test.c makefile
+	gcc -c test.c
 
 clean:
-	rm armstrong armstrong.o armstrong.o 
+	rm armstrong armstrong.o armstrong.o test.o 

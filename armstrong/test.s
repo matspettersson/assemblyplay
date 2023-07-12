@@ -1,9 +1,9 @@
-	.file	"cargs.c"
+	.file	"test.c"
 	.text
 	.globl	main
 	.type	main, @function
 main:
-.LFB0:
+.LFB6:
 	.cfi_startproc
 	endbr64
 	pushq	%rbp
@@ -11,22 +11,19 @@ main:
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
-	movl	%edi, -36(%rbp)
-	movq	%rsi, -48(%rbp)
-	movl	-36(%rbp), %eax
-	movl	%eax, -20(%rbp)
-	movq	-48(%rbp), %rax
-	movq	8(%rax), %rax
-	movq	%rax, -16(%rbp)
-	movq	-48(%rbp), %rax
-	movq	16(%rax), %rax
-	movq	%rax, -8(%rbp)
+	subq	$32, %rsp
+	movl	%edi, -20(%rbp)
+	movq	%rsi, -32(%rbp)
+	movl	$5, %esi
+	movl	$2, %edi
+	call	power@PLT
+	movl	%eax, -4(%rbp)
 	movl	$0, %eax
-	popq	%rbp
+	leave
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
-.LFE0:
+.LFE6:
 	.size	main, .-main
 	.ident	"GCC: (Ubuntu 12.2.0-17ubuntu1) 12.2.0"
 	.section	.note.GNU-stack,"",@progbits
