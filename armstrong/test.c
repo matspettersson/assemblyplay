@@ -3,6 +3,7 @@
 
 extern int power(int, int);
 extern int checkparm(char *);
+extern int power_sse(int, int);
 
 int main(int argc, char *argv[]) {
 
@@ -16,6 +17,11 @@ if(argc == 3) {
 	char *s1 = "1234";
 	int b = checkparm(s1);
 	printf("str=%s, b=%d\n", s1, b);
+
+	int sse1 = a1;
+	int sse2 = a2;
+	int ps = power_sse(sse1, sse2);
+	printf("sse, ps=%d\n", ps);
 	}
 
 }

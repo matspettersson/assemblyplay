@@ -1,7 +1,11 @@
 global power:function
+global power_sse:function
 global checkparm:function
 
 section .bss
+abc db 8 dup(?)
+def db 8 dup(?)
+ghi  db 8 dup(?)
 
 section .rodata
 
@@ -97,6 +101,21 @@ power_exit:
     ret
 
 
+power_sse:
+    mov     [abc], rdi
+    mov     [def], rsi
+    movss   xmm0, [abc]
+    movss   xmm1, [def]
+ 
+;    ucomiss xmm0, [ghi]
+    addss   xmm0, xmm1
+;    mulss   xmm0, xmm1
+    movupd  [ghi], xmm0
+;    movss   [ghi], xmm0
+    mov     rax, [ghi]
+;    mov     rax, 1
+;    cvttss2si rax, xmm0
+    ret
 
 ; strlen
 ; Inputs:
