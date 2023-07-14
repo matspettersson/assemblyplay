@@ -21,7 +21,7 @@ if(argc == 3) {
 	int sse1 = a1;
 	int sse2 = a2;
 	int ps = power_sse(sse1, sse2);
-	printf("sse, ps=%d\n", ps);
+	printf("sse %d ^ %d = %d\n", a1, a2, a);
 	}
 
 }

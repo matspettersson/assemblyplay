@@ -3,9 +3,6 @@ global power_sse:function
 global checkparm:function
 
 section .bss
-abc db 8 dup(?)
-def db 8 dup(?)
-ghi  db 8 dup(?)
 
 section .rodata
 
@@ -102,20 +99,55 @@ power_exit:
 
 
 power_sse:
-    mov     [abc], rdi
-    mov     [def], rsi
-    movss   xmm0, [abc]
-    movss   xmm1, [def]
- 
-;    ucomiss xmm0, [ghi]
-    addss   xmm0, xmm1
-;    mulss   xmm0, xmm1
-    movupd  [ghi], xmm0
-;    movss   [ghi], xmm0
-    mov     rax, [ghi]
-;    mov     rax, 1
-;    cvttss2si rax, xmm0
+    push    rbx
+    push    rcx
+    push    rdx
+    cmp     rsi, 0
+    je      ps0              ; any number ^ 0  = 1
+
+;    mov     rax, rdi
+    xor     rbx, rbx
+    mov     rcx, rsi
+    dec     rcx
+ps1:
+;    mov     rdx, rdi
+
+    cmp     rcx, 0
+    jle     power_exits
+
+    cvtsi2ss    xmm0, rdi
+    cvtsi2ss    xmm1, rdi
+
+    mulss   xmm0, xmm1
+
+    dec     rcx
+    jmp     ps1
+ps0:
+    mov     rax, 1
+power_exits:
+    cvttss2si	rax, xmm0
+    pop     rdx
+    pop     rcx
+    pop     rbx
     ret
+
+
+
+
+    ret
+
+
+;	movss	%xmm0, -20(%rbp)
+;	movss	%xmm1, -24(%rbp)
+;	movss	-20(%rbp), %xmm0
+;	mulss	-24(%rbp), %xmm0
+;	movss	%xmm0, -4(%rbp)
+;	movss	-4(%rbp), %xmm0
+;	cvttss2sil	%xmm0, %eax
+
+
+
+
 
 ; strlen
 ; Inputs:
