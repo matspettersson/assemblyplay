@@ -1,6 +1,7 @@
 global power:function
 global power_sse:function
 global checkparm:function
+global armstrong:function
 
 section .bss
 
@@ -12,7 +13,28 @@ section .data
 section .text
 
 
+armstrong:
+    push    rbx
+    push    rcx
+    push    rdx
 
+    mov     rax, rdi
+    xor     rcx, rcx
+    
+    mov     rbx, 10
+a1b:
+    inc     rcx
+    xor     rdx, rdx
+    cmp     rax, 9
+    jbe     a1
+    idiv    rbx
+    jmp     a1b
+a1:
+    mov     rax, rcx
+    pop     rdx
+    pop     rcx
+    pop     rbx
+    ret
 
 
 checkparm:                      ; rdi = pointer to string argument (argv[0])

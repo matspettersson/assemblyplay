@@ -2,10 +2,18 @@
 #include <stdlib.h>
 
 extern int power(int, int);
+extern int armstrong(int);
 extern int checkparm(char *);
 extern int power_sse(int, int);
 
 int main(int argc, char *argv[]) {
+
+if(argc == 2) {
+	int a = atoi(argv[1]);
+	int c = armstrong(a);
+	printf("number=%d --- armstrong: %d\n", a, c);
+
+}
 
 if(argc == 3) {
 	int a1 = atoi(argv[1]);
@@ -22,6 +30,8 @@ if(argc == 3) {
 	int sse2 = a2;
 	unsigned long int ps = power_sse(sse1, sse2);
 	printf("sse %d ^ %d = %d\n", a1, a2, a);
+
+
 	}
 
 }
