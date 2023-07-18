@@ -5,6 +5,8 @@ global armstrong:function
 
 section .bss
 
+numlen  db  ?
+
 section .rodata
 
 
@@ -31,6 +33,7 @@ a1b:
     jmp     a1b
 a1:
     mov     rax, rcx
+    mov     [numlen], rax
     pop     rdx
     pop     rcx
     pop     rbx
