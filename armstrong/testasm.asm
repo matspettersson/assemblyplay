@@ -6,6 +6,7 @@ global armstrong:function
 section .bss
 
 numlen  db  ?
+sum     dq  ?
 
 section .rodata
 
@@ -33,7 +34,31 @@ a1b:
     jmp     a1b
 a1:
     mov     rax, rcx
-    mov     [numlen], rax
+    mov     [numlen], rax       ; now numlen contains number of digits
+
+    mov     rax, rdi
+power_and_add_numbers:
+    push    rax
+    cmp     rcx, 0
+    je      armstrong_done
+
+    xor     rdx, rdx
+ 
+    idiv    rbx                 ; rdx => rdx ^ 3
+    push    rdi
+
+    mov     rdi, rdx
+    mov     rsi, 3
+    call    power
+
+    add     [sum], rax
+
+    pop     rdi
+    pop     rax
+
+    dec     rcx
+    jmp     power_and_add_numbers
+armstrong_done:
     pop     rdx
     pop     rcx
     pop     rbx
