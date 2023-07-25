@@ -5,8 +5,9 @@ global armstrong:function
 
 section .bss
 
-numlen  db  ?
-sum     dq  ?
+numlen  db  0
+sum     dq  0
+remain  dq  0
 
 section .rodata
 
@@ -38,7 +39,6 @@ a1:
 
     mov     rax, rdi
 power_and_add_numbers:
-    push    rax
     cmp     rcx, 0
     je      armstrong_done
 
@@ -46,6 +46,7 @@ power_and_add_numbers:
  
     idiv    rbx                 ; rdx => rdx ^ 3
     push    rdi
+    mov     [remain], rax
 
     mov     rdi, rdx
     mov     rsi, 3
@@ -54,11 +55,15 @@ power_and_add_numbers:
     add     [sum], rax
 
     pop     rdi
-    pop     rax
 
+    mov     rax, [remain]
     dec     rcx
     jmp     power_and_add_numbers
 armstrong_done:
+    mov     rax, rdi
+    ;mov     rax, [sum]
+    mov     rdi, [sum]
+    sub     rax, rdi        ; if 0 => armstrong
     pop     rdx
     pop     rcx
     pop     rbx
