@@ -36,6 +36,7 @@ a1b:
 a1:
     mov     rax, rcx
     mov     [numlen], rax       ; now numlen contains number of digits
+    mov     r8, rax
 
     mov     rax, rdi
 power_and_add_numbers:
@@ -49,7 +50,8 @@ power_and_add_numbers:
     mov     [remain], rax
 
     mov     rdi, rdx
-    mov     rsi, 3
+    mov     rsi, [numlen]
+    mov     rsi, r8
     call    power
 
     add     [sum], rax
@@ -63,7 +65,8 @@ armstrong_done:
     mov     rax, rdi
     ;mov     rax, [sum]
     mov     rdi, [sum]
-    sub     rax, rdi        ; if 0 => armstrong
+;    sub     rax, rdi        ; if 0 => armstrong
+    sub     rdi, rax
     pop     rdx
     pop     rcx
     pop     rbx
