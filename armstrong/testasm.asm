@@ -65,8 +65,8 @@ armstrong_done:
     mov     rax, rdi
     ;mov     rax, [sum]
     mov     rdi, [sum]
-;    sub     rax, rdi        ; if 0 => armstrong
-    sub     rdi, rax
+    sub     rax, rdi        ; if 0 => armstrong
+;    sub     rdi, rax
     pop     rdx
     pop     rcx
     pop     rbx

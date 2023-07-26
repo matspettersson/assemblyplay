@@ -10,13 +10,13 @@ int main(int argc, char *argv[]) {
 
 if(argc == 2) {
 	int a = atoi(argv[1]);
-	int c = armstrong(a);
+	unsigned int c = armstrong(a);
 	
 	int	x = 4;
 	int y = 3;
 	int d = power(x, y);
 
-	printf("number=%d --- armstrong: %d  --- %d\^%d=%d\n", a, c, x, y, d);
+	printf("number=%d --- armstrong: %d  --- %d^%d=%d\n", a, c, x, y, d);
 
 }
 
